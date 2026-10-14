@@ -36,5 +36,7 @@ non-increasing B-spline coefficients of order `order + 1` on those knots.}
 range, beta, type)`; `ispline_act()` builds the same object for a curve
 fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate the mean
 \eqn{\mu(\eta)} and the residual SD \eqn{\sigma(\eta)} (constant, or
-\eqn{\exp(g_0 + g_1 \eta)}).
+\eqn{\exp(g_0 + g_1 \eta)}). For a count family (`fit_ms(family =
+"poisson")` or `"negbin"`) `mu_sqi()` is the mean count and `sigma_sqi()`
+the SD implied by the family.
 }

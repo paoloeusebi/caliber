@@ -23,6 +23,8 @@ Description: Places the item thresholds of an ordinal multi-item
     (normal-approximation draws for item and threshold quantities,
     nonparametric bootstrap for the curve).
 License: MIT + file LICENSE
+URL: https://paoloeusebi.github.io/caliber, https://github.com/paoloeusebi/caliber
+BugReports: https://github.com/paoloeusebi/caliber/issues
 Encoding: UTF-8
 Depends: R (>= 4.3)
 LazyData: true
@@ -41,7 +43,7 @@ Imports:
 Suggests:
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0),
+    testthat (>= 3.1.5),
     foreign,
     lavaan
 VignetteBuilder: knitr

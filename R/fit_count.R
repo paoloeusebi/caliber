@@ -119,12 +119,14 @@ fit_ms_count_boost <- function(grm, Y, y, mode, family, lambda, shrinkage, max_i
   if (mode == "joint") { a <- item_path[l_use + 1, , 1]; d <- item_path[l_use + 1, , 2:4] }
   item_ll <- if (mode == "eap") NULL else item_loglik_nodes(Y, a, d)
   theta <- if (family == "negbin") count_final_theta(bp[M + 2], mode, y, Bu, beta, item_ll) else NULL
-  list(a = a, d = d, act = as_count_act(monospline_act(beta, NA), family, theta),
-       mode = mode, curve = "boost", family = family,
-       converged = grm$converged && stop_reason != "max_iter",
-       iter = l_use, iter_aic = l_aic, iter_bic = l_bic, df = path$df[l_use + 1],
-       stop_reason = stop_reason, path = path, item_ll = item_ll, R_coef = NULL,
-       eta_cov = if (mode == "eap") grm$eap else NULL)
+  fit <- list(a = a, d = d, act = as_count_act(monospline_act(beta, NA), family, theta),
+              mode = mode, curve = "boost", family = family,
+              converged = grm$converged && stop_reason != "max_iter",
+              iter = l_use, iter_aic = l_aic, iter_bic = l_bic, df = path$df[l_use + 1],
+              stop_reason = stop_reason, path = path, item_ll = item_ll, R_coef = NULL,
+              eta_cov = if (mode == "eap") grm$eap else NULL)
+  warn_node_collapse(fit, y)
+  fit
 }
 
 #' ML of the NB size given the final curve (and items), marginal over eta.

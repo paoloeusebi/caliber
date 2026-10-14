@@ -188,14 +188,16 @@ fit_ms_ispline_count <- function(grm, Y, y, mode, n_knots, max_knots, order, cri
   f <- fits[[pick]]
   act <- as_count_act(ispline_act(ispline_beta(f$b0, f$a_coef), f$interior, order, NA),
                       family, f$theta)
-  list(a = f$a, d = f$d, act = act, mode = mode, curve = "ispline", family = family,
-       converged = grm$converged && f$status == "converged",
-       iter = f$iter, iter_aic = NA_integer_, iter_bic = NA_integer_, df = df[pick],
-       n_knots = cand[pick], knots = f$interior, order = order,
-       coef = c(beta0 = f$b0, setNames(f$a_coef, paste0("a", seq_along(f$a_coef)))),
-       stop_reason = f$status, path = path,
-       item_ll = if (mode == "eap") NULL else item_loglik_nodes(Y, f$a, f$d),
-       R_coef = NULL, eta_cov = if (mode == "eap") grm$eap else NULL)
+  fit <- list(a = f$a, d = f$d, act = act, mode = mode, curve = "ispline", family = family,
+              converged = grm$converged && f$status == "converged",
+              iter = f$iter, iter_aic = NA_integer_, iter_bic = NA_integer_, df = df[pick],
+              n_knots = cand[pick], knots = f$interior, order = order,
+              coef = c(beta0 = f$b0, setNames(f$a_coef, paste0("a", seq_along(f$a_coef)))),
+              stop_reason = f$status, path = path,
+              item_ll = if (mode == "eap") NULL else item_loglik_nodes(Y, f$a, f$d),
+              R_coef = NULL, eta_cov = if (mode == "eap") grm$eap else NULL)
+  warn_node_collapse(fit, y)
+  fit
 }
 
 #' Normal approximation of the I-spline coefficients: inverse observed

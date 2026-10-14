@@ -70,6 +70,27 @@ as_count_act <- function(act, family, theta = NULL) {
   act
 }
 
+#' Warn when y pins eta down more finely than the quadrature nodes (spacing
+#' about 0.4 near 0): each posterior then sits on one node and the integral
+#' over eta, and with it the curve, is badly approximated. Typical of a
+#' Poisson fit to large counts (steps).
+#' @noRd
+warn_node_collapse <- function(fit, y) {
+  if (fit$mode == "eap") return(invisible(FALSE))
+  lj <- log_joint_nodes(fit$item_ll, y, fit$act)
+  pmax <- stats::median(1 / rowSums(exp(lj - apply(lj, 1, max))))
+  if (pmax > 0.9) {
+    warning(sprintf(paste0(
+      "The median posterior puts %.0f%% of its mass on one quadrature node: the ",
+      "count measure is too precise for the latent-trait quadrature and the curve ",
+      "is unreliable.%s"), 100 * pmax,
+      if (fit$family == "poisson") " For large, overdispersed counts use family = \"negbin\"." else ""),
+      call. = FALSE)
+    return(invisible(TRUE))
+  }
+  invisible(FALSE)
+}
+
 check_count <- function(y) {
   if (any(y < 0) || any(abs(y - round(y)) > 1e-8))
     stop("A count family needs non-negative integer values of the digital measure.")

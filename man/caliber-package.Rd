@@ -34,6 +34,15 @@ Throughout the code the digital measure is called `sqi` (the sleep-quality
 index of the worked example); any continuous measure that falls with the
 latent trait can be used (gait speed in the NHANES example).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://paoloeusebi.github.io/caliber}
+  \item \url{https://github.com/paoloeusebi/caliber}
+  \item Report bugs at \url{https://github.com/paoloeusebi/caliber/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Paolo Eusebi \email{paoloeusebi@gmail.com}
 

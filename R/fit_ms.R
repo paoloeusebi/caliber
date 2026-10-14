@@ -98,7 +98,11 @@ select_split <- function(S1, S2, N, Sy, Syy, mu, sigma_u, lambda, shrinkage) {
 #'   the way. `hetero` applies to "gaussian" only. For count families the
 #'   approximate hat matrix is accumulated on the units (nodes or persons)
 #'   with the current Fisher weights, and [ms_vcov()] is not available; use
-#'   [ms_bootstrap()].
+#'   [ms_bootstrap()]. "poisson" suits small counts (deaths, events). A large
+#'   Poisson count (mean in the thousands) locates the latent trait more
+#'   finely than the 61 quadrature nodes resolve, which biases the curve;
+#'   fit_ms() warns when this happens. Large counts such as daily steps are
+#'   overdispersed anyway and should use "negbin".
 #' @param n_knots `curve = "ispline"`: number of interior knots, or "AIC"
 #'   (default) to choose among 0 to `max_knots` by `criterion`
 #' @param max_knots largest number of interior knots tried
