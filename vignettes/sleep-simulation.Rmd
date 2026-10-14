@@ -73,6 +73,22 @@ c(n_knots = fit_i$n_knots, sigma0 = round(fit_i$act$sigma, 2),
 round(rbind(boosting = mu_sqi(-3:3, fit$act), ispline = mu_sqi(-3:3, fit_i$act)), 1)
 ```
 
+### Count measures
+
+A count measure (daily steps, events) uses `family = "poisson"` or
+`family = "negbin"`; the spline then models log E[y | η], with either curve
+method. As an illustration, steps simulated from the true latent values:
+
+```{r counts}
+set.seed(1)
+steps <- rnbinom(nrow(dat), size = 5,
+                 mu = exp(log(8000) - 0.3 * psqi_sleep$eta_true - 0.03 * psqi_sleep$eta_true^2))
+fit_c <- fit_ms(grm, Y, steps, mode = "fixed", curve = "ispline", family = "negbin")
+c(n_knots = fit_c$n_knots, theta = round(fit_c$act$theta, 2))
+round(rbind(fitted = mu_sqi(-3:3, fit_c$act),
+            truth = exp(log(8000) - 0.3 * (-3:3) - 0.03 * (-3:3)^2)))
+```
+
 ## Step 3: interpretation in SQI units
 
 Each GRM threshold b_jk is placed on the SQI scale at s_jk = μ(b_jk).

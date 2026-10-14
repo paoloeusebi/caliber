@@ -12,6 +12,12 @@ The curve can instead be fitted with Ramsay's (1988) monotone regression splines
 knots at quantiles of the latent N(0, 1), fitted by maximum likelihood, with the number of
 knots chosen by AIC. Boosting stays the default.
 
+The digital measure can be continuous (`family = "gaussian"`, the default: actigraphy indices,
+gait speed, distance) or a count (`family = "poisson"` or `"negbin"`: daily steps, events,
+deaths). For counts the spline models log E[y | η], with either curve method; θ of the negative
+binomial is estimated by ML. Normal-approximation intervals (`ms_vcov()`) are Gaussian-only;
+use `ms_bootstrap()` for counts.
+
 ## Install (from this folder)
 
 ```r

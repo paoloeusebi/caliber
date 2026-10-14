@@ -26,7 +26,9 @@ bspline_basis <- function(eta) {
 #' range, beta, type)`; `ispline_act()` builds the same object for a curve
 #' fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate the mean
 #' \eqn{\mu(\eta)} and the residual SD \eqn{\sigma(\eta)} (constant, or
-#' \eqn{\exp(g_0 + g_1 \eta)}).
+#' \eqn{\exp(g_0 + g_1 \eta)}). For a count family (`fit_ms(family =
+#' "poisson")` or `"negbin"`) `mu_sqi()` is the mean count and `sigma_sqi()`
+#' the SD implied by the family.
 #' @param beta 24 non-increasing spline coefficients
 #' @param sigma constant residual SD (ignored when `log_sigma` is given)
 #' @param log_sigma `c(g0, g1)` for the log-linear SD, or NULL
@@ -44,9 +46,15 @@ mu_sqi <- function(eta, act) act$mu(eta)
 
 #' @rdname monospline_act
 #' @export
-sigma_sqi <- function(eta, act)
+sigma_sqi <- function(eta, act) {
+  fam <- act_family(act)
+  if (fam != "gaussian") {
+    m <- mu_sqi(eta, act)
+    return(sqrt(m + if (fam == "negbin") m^2 / act$theta else 0))
+  }
   if (is.null(act$log_sigma)) rep(act$sigma, length(eta)) else
     exp(act$log_sigma[1] + act$log_sigma[2] * eta)
+}
 
 #' Newton steps for (g0, g1) given the curve: maximise
 #' sum_u [-N_u (g0 + g1 x_u) - RSS_u / (2 exp(2 (g0 + g1 x_u)))] (concave).
@@ -65,6 +73,10 @@ update_log_sigma <- function(g, x, N, RSS, max_steps = 25, tol = 1e-10) {
 #' log w_q + log P(C_i | eta_q) + log N(y_i; mu(eta_q), sigma(eta_q)^2), n x Q.
 #' @noRd
 log_joint_nodes <- function(item_ll, sqi, act) {
+  fam <- act_family(act)
+  if (fam != "gaussian")
+    return(sweep(item_ll, 2, log_wts, "+") +
+             count_logdens(sqi, mu_sqi(nodes, act), fam, act$theta))
   sweep(item_ll, 2, log_wts, "+") +
     dnorm(outer(sqi, mu_sqi(nodes, act), "-"), 0,
           rep(sigma_sqi(nodes, act), each = length(sqi)), log = TRUE)

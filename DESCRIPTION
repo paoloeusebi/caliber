@@ -13,7 +13,9 @@ Description: Places the item thresholds of an ordinal multi-item
     log-linear residual SD, fitted by monotonic likelihood boosting
     (Leitenstorfer and Tutz 2007) with the AIC stop, or alternatively by
     Ramsay's (1988) monotone regression splines (I-splines with non-negative
-    coefficients, fitted by maximum likelihood). Three ways of handling
+    coefficients, fitted by maximum likelihood). The measure can be
+    continuous (Gaussian) or a count (Poisson or negative binomial, with the
+    spline on the log mean). Three ways of handling
     the latent trait are implemented: concurrent calibration (MS-Joint),
     EAP plug-in (MS-EAP) and fixed-item calibration (MS-Fixed). Outputs are
     thresholds in the digital measure's units, structural and probabilistic
