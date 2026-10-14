@@ -9,6 +9,12 @@ MS-Fixed (fixed-item calibration, the recommended primary analysis),
 MS-Joint (concurrent calibration) and MS-EAP (EAP plug-in, the naive
 comparator).
 
+The curve can instead be fitted with Ramsay’s (1988) monotone regression
+splines (`fit_ms(..., curve = "ispline")`): a non-negative combination
+of I-splines on a few interior knots at quantiles of the latent N(0, 1),
+fitted by maximum likelihood, with the number of knots chosen by AIC.
+Boosting stays the default.
+
 ## Install (from this folder)
 
 [`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"mirt"``, ``"statmod"``, ``"ggplot2"``, ``"patchwork"``, ``"scales"``, ``"viridisLite"``)``)`` ``roxygen2``::`[`roxygenise`](https://roxygen2.r-lib.org/reference/roxygenize.html)`(``"."``)`` ``# builds man/ (and checks NAMESPACE)`` ``devtools``::`[`install`](https://devtools.r-lib.org/reference/install.html)`(``"."``)`` ``# or: R CMD build . && R CMD INSTALL caliber_0.1.0.tar.gz`
@@ -18,7 +24,7 @@ comparator).
 | Step | Functions |
 |----|----|
 | GRM on the PRO | [`fit_grm()`](https://paoloeusebi.github.io/caliber/reference/fit_grm.md) |
-| Curve | [`fit_ms()`](https://paoloeusebi.github.io/caliber/reference/fit_ms.md), [`fit_three()`](https://paoloeusebi.github.io/caliber/reference/fit_three.md), [`mu_sqi()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md), [`sigma_sqi()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md) |
+| Curve | [`fit_ms()`](https://paoloeusebi.github.io/caliber/reference/fit_ms.md) (`curve = "boost"` or `"ispline"`), [`fit_three()`](https://paoloeusebi.github.io/caliber/reference/fit_three.md), [`mu_sqi()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md), [`sigma_sqi()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md), [`ispline_basis()`](https://paoloeusebi.github.io/caliber/reference/ispline_basis.md), [`ispline_knots()`](https://paoloeusebi.github.io/caliber/reference/ispline_knots.md) |
 | Interpretation | [`threshold_locations()`](https://paoloeusebi.github.io/caliber/reference/threshold_locations.md), [`threshold_flags()`](https://paoloeusebi.github.io/caliber/reference/threshold_flags.md), [`crosswalk()`](https://paoloeusebi.github.io/caliber/reference/crosswalk_probabilistic.md), [`crosswalk_probabilistic()`](https://paoloeusebi.github.io/caliber/reference/crosswalk_probabilistic.md), [`exceedance_probabilistic()`](https://paoloeusebi.github.io/caliber/reference/exceedance_probabilistic.md), [`curve_ends()`](https://paoloeusebi.github.io/caliber/reference/curve_ends.md), [`plausible_values()`](https://paoloeusebi.github.io/caliber/reference/plausible_values.md) |
 | Intervals | [`ms_vcov()`](https://paoloeusebi.github.io/caliber/reference/ms_vcov.md) + [`ms_intervals()`](https://paoloeusebi.github.io/caliber/reference/ms_intervals.md) (items, thresholds, crosswalk), [`ms_bootstrap()`](https://paoloeusebi.github.io/caliber/reference/ms_bootstrap.md) + [`boot_intervals()`](https://paoloeusebi.github.io/caliber/reference/boot_intervals.md) (curve) |
 | Figures | [`wright_map_sqi()`](https://paoloeusebi.github.io/caliber/reference/wright_map_sqi.md), [`plot_expected_scores()`](https://paoloeusebi.github.io/caliber/reference/plot_expected_scores.md) |

@@ -18,7 +18,7 @@
 - [`fit_grm()`](https://paoloeusebi.github.io/caliber/reference/fit_grm.md)
   : Graded response model on the PRO items alone
 - [`fit_ms()`](https://paoloeusebi.github.io/caliber/reference/fit_ms.md)
-  : Fit the monotone curve by monotonic likelihood boosting
+  : Fit the monotone curve
 - [`fit_summary()`](https://paoloeusebi.github.io/caliber/reference/fit_summary.md)
   : Standard summary of one fit
 - [`fit_three()`](https://paoloeusebi.github.io/caliber/reference/fit_three.md)
@@ -31,7 +31,12 @@
 - [`grm_probs()`](https://paoloeusebi.github.io/caliber/reference/grm_probs.md)
   [`grm_expected()`](https://paoloeusebi.github.io/caliber/reference/grm_probs.md)
   : Category probabilities and expected score of one GRM item
-- [`monospline_act()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)
+- [`ispline_basis()`](https://paoloeusebi.github.io/caliber/reference/ispline_basis.md)
+  : I-spline basis
+- [`ispline_knots()`](https://paoloeusebi.github.io/caliber/reference/ispline_knots.md)
+  : Interior knots for the I-spline curve
+- [`ispline_act()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)
+  [`monospline_act()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)
   [`mu_sqi()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)
   [`sigma_sqi()`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)
   : The equation of the digital measure

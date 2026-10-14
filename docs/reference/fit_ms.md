@@ -1,9 +1,10 @@
-# Fit the monotone curve by monotonic likelihood boosting
+# Fit the monotone curve
 
 Monotone B-spline equation of the digital measure by monotonic
-likelihood boosting (Leitenstorfer and Tutz 2007, GMBBoost), in one of
-three ways (the boosting steps, tuning values and stopping rule are the
-same):
+likelihood boosting (Leitenstorfer and Tutz 2007, GMBBoost; the default)
+or by Ramsay's (1988) monotone regression splines (\`curve =
+"ispline"\`), in one of three ways (the boosting steps, tuning values
+and stopping rule are the same):
 
 ## Usage
 
@@ -19,7 +20,11 @@ fit_ms(
   patience = 100,
   criterion = "AIC",
   item_every = 5,
-  hetero = TRUE
+  hetero = TRUE,
+  curve = c("boost", "ispline"),
+  n_knots = "AIC",
+  max_knots = 5,
+  order = 2
 )
 ```
 
@@ -70,12 +75,42 @@ fit_ms(
   TRUE (default) for log sigma(eta) = g0 + g1 eta, FALSE for a constant
   residual SD (sensitivity analysis)
 
+- curve:
+
+  "boost" (default): monotonic likelihood boosting of the 24-coefficient
+  B-spline, as above. "ispline": Ramsay's (1988) monotone regression
+  spline, \\\mu(\eta) = \beta_0 - \sum_m a_m I_m(\eta)\\, \\a_m \ge 0\\,
+  with I-splines of order \`order\` on \`n_knots\` interior knots at
+  quantiles of N(0, 1) (see \[ispline_knots()\]), fitted by maximum
+  likelihood under the bounds (EM over the nodes for "fixed" and
+  "joint", direct for "eap"). The three ways of handling the latent
+  trait are the same. \`lambda\`, \`shrinkage\`, \`patience\` and
+  \`item_every\` are then unused, and \`max_iter\` caps the EM
+  iterations.
+
+- n_knots:
+
+  \`curve = "ispline"\`: number of interior knots, or "AIC" (default) to
+  choose among 0 to \`max_knots\` by \`criterion\`
+
+- max_knots:
+
+  largest number of interior knots tried
+
+- order:
+
+  I-spline order k (default 2, piecewise quadratic I-splines, so the
+  curve is a quadratic spline with continuous slope)
+
 ## Value
 
 list(a, d, act, mode, converged, iter, iter_aic, iter_bic, df,
 stop_reason, path, item_ll (not for "eap"), R_coef (coefficient operator
 at the AIC stop, used by \[ms_vcov()\]), eta_cov (EAP scores, "eap"
-only))
+only), curve). For \`curve = "ispline"\`, \`iter\` is the number of EM
+iterations, \`path\` the knot selection table, \`R_coef\` NULL, and the
+result also has n_knots, knots, order and coef (beta0 and the I-spline
+coefficients).
 
 ## Details
 
@@ -115,3 +150,6 @@ or max_iter.
 Leitenstorfer F, Tutz G (2007). Generalized monotonic regression based
 on B-splines with an application to air pollution data. Biostatistics 8,
 654-673.
+
+Ramsay JO (1988). Monotone regression splines in action. Statistical
+Science 3, 425-461.

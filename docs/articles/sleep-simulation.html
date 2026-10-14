@@ -123,13 +123,41 @@ is the recommended primary analysis; MS-Joint
 <span><span class="co">#&gt; 1046.00    4.46    5.74   -0.06</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/monospline_act.html">mu_sqi</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span><span class="op">:</span><span class="fl">3</span>, <span class="va">fit</span><span class="op">$</span><span class="va">act</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 79.5 79.5 78.3 72.7 62.5 48.7 28.7</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="alternative-curve-ramsays-monotone-regression-splines">Alternative curve: Ramsay’s monotone regression splines<a class="anchor" aria-label="anchor" href="#alternative-curve-ramsays-monotone-regression-splines"></a>
+</h3>
+<p><code>fit_ms(curve = "ispline")</code> replaces the boosting by
+Ramsay’s (1988) monotone regression splines: μ(η) = β0 − Σ a_m I_m(η)
+with a_m ≥ 0, I-splines of order 2 on a few interior knots at quantiles
+of N(0, 1) (median, terciles, …), fitted by maximum likelihood under the
+bounds. The number of knots is chosen by AIC among 0 to 5. The three
+ways of handling the latent trait are the same.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit_i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_ms.html">fit_ms</a></span><span class="op">(</span><span class="va">grm</span>, <span class="va">Y</span>, <span class="va">sqi</span>, mode <span class="op">=</span> <span class="st">"fixed"</span>, curve <span class="op">=</span> <span class="st">"ispline"</span><span class="op">)</span></span>
+<span><span class="va">fit_i</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_knots"</span>, <span class="st">"deviance"</span>, <span class="st">"df"</span>, <span class="st">"aic"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   n_knots deviance df      aic</span></span>
+<span><span class="co">#&gt; 1       0 20969.53  4 20977.53</span></span>
+<span><span class="co">#&gt; 2       1 20959.55  5 20969.55</span></span>
+<span><span class="co">#&gt; 3       2 20956.96  6 20968.96</span></span>
+<span><span class="co">#&gt; 4       3 20955.14  7 20969.14</span></span>
+<span><span class="co">#&gt; 5       4 20955.04  8 20971.04</span></span>
+<span><span class="co">#&gt; 6       5 20955.03  9 20973.03</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>n_knots <span class="op">=</span> <span class="va">fit_i</span><span class="op">$</span><span class="va">n_knots</span>, sigma0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">fit_i</span><span class="op">$</span><span class="va">act</span><span class="op">$</span><span class="va">sigma</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  g1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">fit_i</span><span class="op">$</span><span class="va">act</span><span class="op">$</span><span class="va">log_sigma</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; n_knots  sigma0      g1 </span></span>
+<span><span class="co">#&gt;   2.000   5.870  -0.034</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>boosting <span class="op">=</span> <span class="fu"><a href="../reference/monospline_act.html">mu_sqi</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span><span class="op">:</span><span class="fl">3</span>, <span class="va">fit</span><span class="op">$</span><span class="va">act</span><span class="op">)</span>, ispline <span class="op">=</span> <span class="fu"><a href="../reference/monospline_act.html">mu_sqi</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span><span class="op">:</span><span class="fl">3</span>, <span class="va">fit_i</span><span class="op">$</span><span class="va">act</span><span class="op">)</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt;          [,1] [,2] [,3] [,4] [,5] [,6] [,7]</span></span>
+<span><span class="co">#&gt; boosting 79.5 79.5 78.3 72.7 62.5 48.7 28.7</span></span>
+<span><span class="co">#&gt; ispline  83.3 81.2 77.6 72.3 62.6 49.7 33.8</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="step-3-interpretation-in-sqi-units">Step 3: interpretation in SQI units<a class="anchor" aria-label="anchor" href="#step-3-interpretation-in-sqi-units"></a>
 </h2>
 <p>Each GRM threshold b_jk is placed on the SQI scale at s_jk =
 μ(b_jk).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">thr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/threshold_locations.html">threshold_locations</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">a</span>, <span class="va">fit</span><span class="op">$</span><span class="va">d</span>, <span class="va">fit</span><span class="op">$</span><span class="va">act</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">thr</span><span class="op">$</span><span class="va">sqi</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">items</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"k"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">thr</span><span class="op">$</span><span class="va">sqi</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -143,7 +171,7 @@ is the recommended primary analysis; MS-Joint
 <span><span class="co">#&gt; C7 78.1 62.6 40.2</span></span></code></pre></div>
 <p>The probabilistic crosswalk gives the expected PSQI response pattern
 at a given SQI, averaging over the latent values compatible with it.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crosswalk_probabilistic.html">crosswalk</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">60</span>, <span class="fl">70</span>, <span class="fl">80</span><span class="op">)</span>, <span class="va">fit</span><span class="op">$</span><span class="va">a</span>, <span class="va">fit</span><span class="op">$</span><span class="va">d</span>, <span class="va">fit</span><span class="op">$</span><span class="va">act</span>, <span class="va">items</span>, total_name <span class="op">=</span> <span class="st">"PSQI"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">cw</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SQI"</span>, <span class="st">"E_PSQI"</span>, <span class="st">"Estar_PSQI"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   SQI E_PSQI Estar_PSQI</span></span>
@@ -151,7 +179,7 @@ at a given SQI, averaging over the latent values compatible with it.</p>
 <span><span class="co">#&gt; 2  60   9.69      11.30</span></span>
 <span><span class="co">#&gt; 3  70   6.24       7.04</span></span>
 <span><span class="co">#&gt; 4  80   4.01         NA</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">items</span>, <span class="fl">3</span><span class="op">)</span>, k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, each <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>, sqi_est <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">thr</span><span class="op">$</span><span class="va">sqi</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">pv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plausible_values.html">plausible_values</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">grm</span>, <span class="va">sqi</span>, seed <span class="op">=</span> <span class="fl">20261004</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/wright_map_sqi.html">wright_map_sqi</a></span><span class="op">(</span><span class="fu"><a href="../reference/monospline_act.html">mu_sqi</a></span><span class="op">(</span><span class="va">pv</span>, <span class="va">fit</span><span class="op">$</span><span class="va">act</span><span class="op">)</span>, <span class="va">th</span>, <span class="va">sleep_item_labels</span><span class="op">)</span></span></code></pre></div>
@@ -166,7 +194,7 @@ Wright map on the SQI scale, MS-Fixed.
 </h2>
 <p>Item parameters, thresholds within the data and the crosswalk get
 intervals from draws of the normal approximation of the estimates:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ms_vcov.html">ms_vcov</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">Y</span>, <span class="va">sqi</span><span class="op">)</span></span>
 <span><span class="va">iv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ms_intervals.html">ms_intervals</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">vc</span>, <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">d</span>, <span class="va">act</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/threshold_locations.html">threshold_locations</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">d</span>, <span class="va">act</span><span class="op">)</span><span class="op">$</span><span class="va">sqi</span></span>
@@ -176,7 +204,7 @@ intervals from draws of the normal approximation of the estimates:</p>
 the sampling variance of the curve itself (SD of μ̂(0) 0.26 against a
 true 0.61), so curve bands come from the nonparametric bootstrap, which
 refits every step:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">boot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ms_bootstrap.html">ms_bootstrap</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">sqi</span>, n_boot <span class="op">=</span> <span class="fl">200</span>, keep_categories <span class="op">=</span> <span class="cn">FALSE</span>, cores <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/boot_intervals.html">boot_intervals</a></span><span class="op">(</span><span class="va">boot</span>, <span class="st">"MS-Fixed"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"mu("</span>, <span class="op">-</span><span class="fl">3</span><span class="op">:</span><span class="fl">3</span>, <span class="st">")"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Neither kind of interval has been validated by a coverage simulation.
@@ -190,7 +218,7 @@ reported as beyond data support, not with an interval.</p>
 replications (about 3 hours on 4 cores) and
 <code>sleep_simulation_summary.R</code> makes the tables and figures.
 One replication:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_scenario.html">simulate_scenario</a></span><span class="op">(</span>s <span class="op">=</span> <span class="fl">4</span>, r <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>        <span class="co"># gentle logistic truth</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_three.html">fit_three</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">Y</span>, <span class="va">d</span><span class="op">$</span><span class="va">sqi</span><span class="op">)</span></span>
 <span><span class="va">tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scenario_truth.html">scenario_truth</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">95</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>

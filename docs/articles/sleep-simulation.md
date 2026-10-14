@@ -38,6 +38,17 @@ fits all three.
 
 `fit`` ``<-`` `[`fit_ms`](https://paoloeusebi.github.io/caliber/reference/fit_ms.md)`(``grm``, ``Y``, ``sqi``, mode ``=`` ``"fixed"``)`` `[`c`](https://rdrr.io/r/base/c.html)`(``iter ``=`` ``fit``$``iter``, df ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(``fit``$``df``, ``2``)``, sigma0 ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(``fit``$``act``$``sigma``, ``2``)``,`` `` g1 ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(``fit``$``act``$``log_sigma``[``2``]``, ``3``)``)`` ``#> iter df sigma0 g1 `` ``#> 1046.00 4.46 5.74 -0.06`` `[`round`](https://rdrr.io/r/base/Round.html)`(`[`mu_sqi`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)`(``-``3``:``3``, ``fit``$``act``)``, ``1``)`` ``#> [1] 79.5 79.5 78.3 72.7 62.5 48.7 28.7`
 
+### Alternative curve: Ramsay’s monotone regression splines
+
+`fit_ms(curve = "ispline")` replaces the boosting by Ramsay’s (1988)
+monotone regression splines: μ(η) = β0 − Σ a_m I_m(η) with a_m ≥ 0,
+I-splines of order 2 on a few interior knots at quantiles of N(0, 1)
+(median, terciles, …), fitted by maximum likelihood under the bounds.
+The number of knots is chosen by AIC among 0 to 5. The three ways of
+handling the latent trait are the same.
+
+`fit_i`` ``<-`` `[`fit_ms`](https://paoloeusebi.github.io/caliber/reference/fit_ms.md)`(``grm``, ``Y``, ``sqi``, mode ``=`` ``"fixed"``, curve ``=`` ``"ispline"``)`` ``fit_i``$``path``[`[`c`](https://rdrr.io/r/base/c.html)`(``"n_knots"``, ``"deviance"``, ``"df"``, ``"aic"``)``]`` ``#> n_knots deviance df aic`` ``#> 1 0 20969.53 4 20977.53`` ``#> 2 1 20959.55 5 20969.55`` ``#> 3 2 20956.96 6 20968.96`` ``#> 4 3 20955.14 7 20969.14`` ``#> 5 4 20955.04 8 20971.04`` ``#> 6 5 20955.03 9 20973.03`` `[`c`](https://rdrr.io/r/base/c.html)`(``n_knots ``=`` ``fit_i``$``n_knots``, sigma0 ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(``fit_i``$``act``$``sigma``, ``2``)``,`` `` g1 ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(``fit_i``$``act``$``log_sigma``[``2``]``, ``3``)``)`` ``#> n_knots sigma0 g1 `` ``#> 2.000 5.870 -0.034`` `[`round`](https://rdrr.io/r/base/Round.html)`(`[`rbind`](https://rdrr.io/r/base/cbind.html)`(``boosting ``=`` `[`mu_sqi`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)`(``-``3``:``3``, ``fit``$``act``)``, ispline ``=`` `[`mu_sqi`](https://paoloeusebi.github.io/caliber/reference/monospline_act.md)`(``-``3``:``3``, ``fit_i``$``act``)``)``, ``1``)`` ``#> [,1] [,2] [,3] [,4] [,5] [,6] [,7]`` ``#> boosting 79.5 79.5 78.3 72.7 62.5 48.7 28.7`` ``#> ispline 83.3 81.2 77.6 72.3 62.6 49.7 33.8`
+
 ## Step 3: interpretation in SQI units
 
 Each GRM threshold b_jk is placed on the SQI scale at s_jk = μ(b_jk).
