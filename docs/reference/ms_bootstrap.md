@@ -1,0 +1,76 @@
+# Nonparametric bootstrap of the three methods
+
+Resamples persons with replacement and refits every step (the PRO-only
+GRM, the boosting with its own AIC stop, the final residual SD) for each
+method, then applies \`summary_fun\` to each fit. With \`keep_categories
+= TRUE\` a resample in which an item lost a response category present in
+the data is redrawn (the GRM then has no threshold for it); the number
+of redraws and, per threshold, whether the resample was redrawn because
+that category was lost are returned, so the intervals are conditional on
+every category being present.
+
+## Usage
+
+``` r
+ms_bootstrap(
+  Y,
+  sqi,
+  n_boot = 200,
+  seed = 20261003,
+  summary_fun = function(f) fit_summary(f, items = colnames(Y)),
+  methods = ms_methods,
+  keep_categories = TRUE,
+  cores = 1,
+  ...
+)
+```
+
+## Arguments
+
+- Y:
+
+  item responses
+
+- sqi:
+
+  the digital measure
+
+- n_boot:
+
+  number of resamples
+
+- seed:
+
+  base seed; resample r uses \`seed + 100000 + r\`
+
+- summary_fun:
+
+  function(fit) returning a named numeric vector
+
+- methods:
+
+  which of \[ms_methods\] to refit
+
+- keep_categories:
+
+  redraw resamples that lose a category
+
+- cores:
+
+  number of worker processes (1 = sequential)
+
+- ...:
+
+  passed to \[fit_ms()\]
+
+## Value
+
+data.frame with columns method, rep, redrawn, lost\_\* and the summaries
+
+## Details
+
+The bootstrap captures the variability of the selected boosting path,
+which the normal approximation misses, but it does not remove smoothing
+bias, is not guaranteed to be consistent where the monotone curve is
+flat, and carries no information beyond the data. Its coverage has not
+been validated by simulation.

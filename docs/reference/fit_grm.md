@@ -1,0 +1,30 @@
+# Graded response model on the PRO items alone
+
+Fits a unidimensional logistic GRM with mirt (\`itemtype = "graded"\`,
+defaults) and orients the latent trait so that the sum of the slopes is
+positive (higher \\\eta\\ = higher item scores). For an item whose top
+categories nobody used, mirt estimates no threshold for them; the
+missing intercept is set 20 logits below the previous one, so the
+category has probability close to zero everywhere, and the threshold
+should be reported as not estimable.
+
+## Usage
+
+``` r
+fit_grm(Y, SE = FALSE)
+```
+
+## Arguments
+
+- Y:
+
+  matrix or data frame of item responses scored 0..3 (NA allowed), one
+  column per item; column names are used as item names
+
+- SE:
+
+  passed to \[mirt::mirt()\]
+
+## Value
+
+list(a, d (items x 3), eap, converged, orientation, items, mirt)

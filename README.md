@@ -24,7 +24,23 @@ devtools::install(".")         # or: R CMD build . && R CMD INSTALL caliber_0.1.
 | Interpretation | `threshold_locations()`, `threshold_flags()`, `crosswalk()`, `crosswalk_probabilistic()`, `exceedance_probabilistic()`, `curve_ends()`, `plausible_values()` |
 | Intervals | `ms_vcov()` + `ms_intervals()` (items, thresholds, crosswalk), `ms_bootstrap()` + `boot_intervals()` (curve) |
 | Figures | `wright_map_sqi()`, `plot_expected_scores()` |
-| Example data | `sleep_data()`, `simulate_sleep_data()`, `gait_data()` |
+| Example data | `psqi_sleep`, `gait` (data sets); `sleep_data()`, `sleep_eta_true()`, `simulate_sleep_data()`, `gait_data()` |
+
+## Data sets
+
+Both are lazy-loaded (`caliber::psqi_sleep`, `caliber::gait`) and documented in `?caliber::psqi_sleep`
+and `?caliber::gait`. `data-raw/datasets.R` rebuilds them from the CSV files in `data-raw/`.
+Attaching caliber masks `datasets::gait` (added in R 4.5); use `datasets::gait` for that one.
+
+| Data set | Rows × columns | Content |
+| --- | --- | --- |
+| `psqi_sleep` | 1000 × 11 | Simulated PSQI components C1–C7, PSQI global, actigraphy SQI and the true trait `eta_true`; `simulate_sleep_data(seed = 20261003)` |
+| `gait` | 1426 × 15 | NHANES 2001–2002 (MSX_B, PFQ_B, DEMO_B), ages 60+, gait speed and seven mobility items; built by `inst/scripts/gait_data.R`, unweighted |
+
+## Documentation
+
+Rendered vignettes and the function reference are in `docs/` (pkgdown site), served at
+<https://paoloeusebi.github.io/caliber/> when GitHub Pages is enabled for `main` / `docs`.
 
 The digital measure is called `sqi` in the code (from the sleep example); any measure that falls
 as the latent trait rises can be used.

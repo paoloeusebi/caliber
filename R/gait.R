@@ -7,7 +7,8 @@
 #' 0 = no difficulty, 1 = some, 2 = much, 3 = unable (refused and don't know
 #' missing), for persons aged 60+ with a valid walk time and at least one item
 #' answered (n = 1,426). Built from the public-use files MSX_B, PFQ_B and
-#' DEMO_B by `inst/scripts/gait_data.R`. Analyses are unweighted.
+#' DEMO_B by `inst/scripts/gait_data.R` and shipped as [gait]. Analyses
+#' are unweighted.
 #'
 #' Items C1 (walking a quarter mile) and C2 (walking up 10 steps) are not asked
 #' of people who need special equipment to walk (PFQ055 = 1, 103 people) and
@@ -18,14 +19,15 @@
 #'
 #' @param exclude_aids drop walking-aid users
 #' @param skip_unable score the skipped walking items as unable
-#' @param file path to an analysis file (default: the copy shipped with the package)
+#' @param file path to an analysis CSV file with the columns of [gait];
+#'   `NULL` (default) uses the package data set [gait]
 #' @return list(dat, Y, speed, n, tag, exclude_aids, skip_unable, n_skip_recoded);
 #'   `tag` is "", "_noaids" or "_skipunable"
 #' @export
 gait_data <- function(exclude_aids = FALSE, skip_unable = FALSE,
-                      file = system.file("extdata", "gait_analysis.csv", package = "caliber")) {
+                      file = NULL) {
   if (exclude_aids && skip_unable) stop("Choose exclude_aids or skip_unable, not both.")
-  dat <- utils::read.csv(file)
+  dat <- if (is.null(file)) caliber::gait else utils::read.csv(file)
   tag <- ""
   if (exclude_aids) { dat <- dat[dat$walking_aid == 0, ]; tag <- "_noaids" }
   n_skip_recoded <- 0

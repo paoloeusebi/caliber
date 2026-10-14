@@ -4,18 +4,15 @@
 \alias{gait_data}
 \title{The NHANES 2001-2002 gait-speed example}
 \usage{
-gait_data(
-  exclude_aids = FALSE,
-  skip_unable = FALSE,
-  file = system.file("extdata", "gait_analysis.csv", package = "caliber")
-)
+gait_data(exclude_aids = FALSE, skip_unable = FALSE, file = NULL)
 }
 \arguments{
 \item{exclude_aids}{drop walking-aid users}
 
 \item{skip_unable}{score the skipped walking items as unable}
 
-\item{file}{path to an analysis file (default: the copy shipped with the package)}
+\item{file}{path to an analysis CSV file with the columns of [gait];
+`NULL` (default) uses the package data set [gait]}
 }
 \value{
 list(dat, Y, speed, n, tag, exclude_aids, skip_unable, n_skip_recoded);
@@ -27,7 +24,8 @@ lower-body mobility items of the physical functioning questionnaire, scored
 0 = no difficulty, 1 = some, 2 = much, 3 = unable (refused and don't know
 missing), for persons aged 60+ with a valid walk time and at least one item
 answered (n = 1,426). Built from the public-use files MSX_B, PFQ_B and
-DEMO_B by `inst/scripts/gait_data.R`. Analyses are unweighted.
+DEMO_B by `inst/scripts/gait_data.R` and shipped as [gait]. Analyses
+are unweighted.
 }
 \details{
 Items C1 (walking a quarter mile) and C2 (walking up 10 steps) are not asked

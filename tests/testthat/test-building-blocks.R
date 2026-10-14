@@ -43,6 +43,34 @@ test_that("the shipped data sets load", {
   expect_equal(gait_data(skip_unable = TRUE)$n_skip_recoded, 103)
 })
 
+test_that("the package data objects have the documented shape", {
+  expect_equal(dim(caliber::psqi_sleep), c(1000, 11))
+  expect_equal(names(caliber::psqi_sleep),
+               c("id", paste0("C", 1:7), "PSQI_global", "SQI", "eta_true"))
+  expect_equal(dim(caliber::gait), c(1426, 15))
+  expect_equal(names(caliber::gait),
+               c("SEQN", "age", "sex", "walk_time", "gait_speed", "walking_aid",
+                 paste0("C", 1:7), "n_items_answered", "needs_equipment"))
+})
+
+test_that("the accessors return the data objects as before", {
+  d <- sleep_data()
+  expect_identical(names(d), c("id", paste0("C", 1:7), "PSQI_global", "SQI"))
+  expect_identical(d, caliber::psqi_sleep[names(d)])
+  expect_true(all(vapply(d[c("id", paste0("C", 1:7), "PSQI_global")], is.integer, NA)))
+  e <- sleep_eta_true()
+  expect_identical(names(e), c("id", "eta_true"))
+  expect_identical(e$eta_true, caliber::psqi_sleep$eta_true)
+  expect_equal(sleep_eta_true()$eta_true, simulate_sleep_data()$eta_true)
+  g <- gait_data()
+  expect_identical(g$dat, caliber::gait)
+  expect_identical(g$speed, caliber::gait$gait_speed)
+  f <- tempfile(fileext = ".csv")
+  utils::write.csv(caliber::gait, f, row.names = FALSE)
+  expect_equal(gait_data(file = f)$Y, g$Y)
+  unlink(f)
+})
+
 test_that("the regenerated sleep data match the shipped copy", {
   d <- sleep_data(); s <- simulate_sleep_data()
   expect_equal(d$SQI, s$SQI)

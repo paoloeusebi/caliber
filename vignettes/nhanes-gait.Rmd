@@ -16,8 +16,10 @@ The real-data example of the manuscript: gait speed from the timed 20-ft walk
 lower-body mobility items of the physical functioning questionnaire (0 = no
 difficulty, 1 = some, 2 = much, 3 = unable). The latent trait is mobility
 difficulty; gait speed falls as it rises, so the non-increasing curve applies
-as it is. The analysis data ship with the package (`gait_data()`); they are
-built from the public-use files by `inst/scripts/gait_data.R`.
+as it is. The analysis data ship with the package as the data set
+`gait` (see `?caliber::gait`), which `gait_data()` returns together with
+the item matrix; they are built from the public-use files by
+`inst/scripts/gait_data.R`.
 
 The full analysis (three methods, 200 bootstrap resamples, sensitivity
 variants, figures) is `inst/scripts/gait_main.R`; item dimensionality checks

@@ -1,0 +1,4 @@
+url: https://paoloeusebi.github.io/caliber/
+destination: docs
+template:
+  bootstrap: 5

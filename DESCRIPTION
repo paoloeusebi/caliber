@@ -21,6 +21,7 @@ Description: Places the item thresholds of an ordinal multi-item
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.3)
+LazyData: true
 Imports:
     mirt,
     statmod,

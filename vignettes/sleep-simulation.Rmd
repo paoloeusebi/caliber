@@ -23,6 +23,10 @@ full analysis scripts are in `system.file("scripts", package = "caliber")`.
 
 ## Data
 
+The data ship with the package as the data set `psqi_sleep` (see
+`?caliber::psqi_sleep`). `sleep_data()` returns it without the true trait, which
+`sleep_eta_true()` keeps apart for evaluation.
+
 ```{r data}
 library(caliber)
 dat <- sleep_data()
