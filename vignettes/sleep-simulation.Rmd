@@ -1,0 +1,117 @@
+---
+title: "Sleep example: actigraphy SQI read on the PSQI components"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sleep example: actigraphy SQI read on the PSQI components}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 9, fig.height = 6.5)
+```
+
+This vignette walks through the worked example of the manuscript: a simulated
+data set (n = 1000) in which seven PSQI component scores (C1 to C7, 0 to 3) and
+an actigraphy sleep-quality index (SQI, higher = better sleep) are driven by
+one latent sleep-disturbance trait. The generating SQI curve is the quadratic
+72 − 8η − 1.5η² with residual SD 6; it is used only as the truth.
+
+The light steps below run when the vignette is built. The bootstrap and the
+simulation study take tens of minutes to hours and are shown, not run; the
+full analysis scripts are in `system.file("scripts", package = "caliber")`.
+
+## Data
+
+```{r data}
+library(caliber)
+dat <- sleep_data()
+items <- paste0("C", 1:7)
+Y <- as.matrix(dat[items]); sqi <- dat$SQI
+summary(dat$PSQI_global); cor(dat$PSQI_global, sqi)
+```
+
+## Step 1: the GRM on the PSQI alone
+
+```{r grm}
+grm <- fit_grm(Y)
+round(cbind(a = grm$a, b = -grm$d / grm$a), 2)
+```
+
+## Step 2: the monotone SQI curve, MS-Fixed
+
+MS-Fixed holds the items at the PSQI-only estimates and integrates the latent
+trait out over p(η | C, SQI) at every boosting iteration. It is the
+recommended primary analysis; MS-Joint (`mode = "joint"`) is the robustness
+check and MS-EAP (`mode = "eap"`) the naive comparator. `fit_three()` fits all
+three.
+
+```{r fit}
+fit <- fit_ms(grm, Y, sqi, mode = "fixed")
+c(iter = fit$iter, df = round(fit$df, 2), sigma0 = round(fit$act$sigma, 2),
+  g1 = round(fit$act$log_sigma[2], 3))
+round(mu_sqi(-3:3, fit$act), 1)
+```
+
+## Step 3: interpretation in SQI units
+
+Each GRM threshold b_jk is placed on the SQI scale at s_jk = μ(b_jk).
+
+```{r thresholds}
+thr <- threshold_locations(fit$a, fit$d, fit$act)
+dimnames(thr$sqi) <- list(items, paste0("k", 1:3))
+round(thr$sqi, 1)
+```
+
+The probabilistic crosswalk gives the expected PSQI response pattern at a
+given SQI, averaging over the latent values compatible with it.
+
+```{r crosswalk}
+cw <- crosswalk(c(50, 60, 70, 80), fit$a, fit$d, fit$act, items, total_name = "PSQI")
+round(cw[c("SQI", "E_PSQI", "Estar_PSQI")], 2)
+```
+
+```{r wright, fig.cap = "Wright map on the SQI scale, MS-Fixed."}
+th <- data.frame(item = rep(items, 3), k = rep(1:3, each = 7), sqi_est = c(thr$sqi))
+pv <- plausible_values(fit, grm, sqi, seed = 20261004)
+wright_map_sqi(mu_sqi(pv, fit$act), th, sleep_item_labels)
+```
+
+## Intervals
+
+Item parameters, thresholds within the data and the crosswalk get intervals
+from draws of the normal approximation of the estimates:
+
+```{r intervals, eval = FALSE}
+vc <- ms_vcov(fit, Y, sqi)
+iv <- ms_intervals(fit, vc, function(a, d, act) {
+  s <- threshold_locations(a, d, act)$sqi
+  setNames(c(s), paste0("s_", threshold_names(items)))
+}, n_draw = 2000, seed = 1)
+```
+
+These draws condition on the selected boosting path and miss most of the
+sampling variance of the curve itself (SD of μ̂(0) 0.26 against a true 0.61),
+so curve bands come from the nonparametric bootstrap, which refits every step:
+
+```{r bootstrap, eval = FALSE}
+boot <- ms_bootstrap(Y, sqi, n_boot = 200, keep_categories = FALSE, cores = 4)
+boot_intervals(boot, "MS-Fixed", paste0("mu(", -3:3, ")"))
+```
+
+Neither kind of interval has been validated by a coverage simulation. The
+top thresholds of C5, C6 and C7 lie beyond the data and should be reported as
+beyond data support, not with an interval.
+
+## Simulation study
+
+`inst/scripts/sleep_simulation.R` runs six scenarios × 200 replications
+(about 3 hours on 4 cores) and `sleep_simulation_summary.R` makes the tables
+and figures. One replication:
+
+```{r sim, eval = FALSE}
+d <- simulate_scenario(s = 4, r = 1)        # gentle logistic truth
+f <- fit_three(d$Y, d$sqi)
+tr <- scenario_truth(4, seq(15, 95, by = 0.5))
+sqrt(mean((threshold_locations(f$`MS-Fixed`$a, f$`MS-Fixed`$d, f$`MS-Fixed`$act)$sqi - tr$thr)^2))
+```

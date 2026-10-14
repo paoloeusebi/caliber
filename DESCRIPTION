@@ -1,0 +1,44 @@
+Package: caliber
+Type: Package
+Title: Monotone Calibration of a Digital Measure to a Multi-Item PRO
+Version: 0.1.0
+Date: 2026-10-14
+Authors@R: person("Paolo", "Eusebi", email = "paoloeusebi@gmail.com",
+                  role = c("aut", "cre"))
+Description: Places the item thresholds of an ordinal multi-item
+    patient-reported outcome (PRO) on the scale of a continuous digital or
+    performance measure. One latent trait drives both instruments: the PRO
+    items follow a logistic graded response model (GRM), and the digital
+    measure depends on the trait through a non-increasing cubic B-spline with
+    log-linear residual SD, fitted by monotonic likelihood boosting
+    (Leitenstorfer and Tutz 2007) with the AIC stop. Three ways of handling
+    the latent trait are implemented: concurrent calibration (MS-Joint),
+    EAP plug-in (MS-EAP) and fixed-item calibration (MS-Fixed). Outputs are
+    thresholds in the digital measure's units, structural and probabilistic
+    crosswalks, exceedance probabilities, Wright maps, and hybrid intervals
+    (normal-approximation draws for item and threshold quantities,
+    nonparametric bootstrap for the curve).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.3)
+Imports:
+    mirt,
+    statmod,
+    splines,
+    stats,
+    grDevices,
+    parallel,
+    ggplot2,
+    patchwork,
+    scales,
+    viridisLite,
+    utils
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    foreign,
+    lavaan
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
