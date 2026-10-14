@@ -86,6 +86,23 @@ select_split <- function(S1, S2, N, Sy, Syy, mu, sigma_u, lambda, shrinkage) {
 #'   direct for "eap"). The three ways of handling the latent trait are the
 #'   same. `lambda`, `shrinkage`, `patience` and `item_every` are then unused,
 #'   and `max_iter` caps the EM iterations.
+#' @param family distribution of the digital measure given the latent trait.
+#'   "gaussian" (default): a continuous measure (actigraphy index, gait speed,
+#'   distance), normal with the mean curve and a constant or log-linear SD.
+#'   "poisson" or "negbin" (negative binomial, Var = mu + mu^2 / theta): a
+#'   count measure (daily steps, events, deaths); the spline is then fitted on
+#'   the log scale, log E[y | eta] = f(eta) non-increasing, by the GLM version
+#'   of the boosting (Leitenstorfer and Tutz 2007: penalised Fisher-scoring
+#'   steps with the Fisher weights of the family, deviance-based split choice
+#'   and AIC stop) or by the I-spline ML fit. theta is estimated by ML along
+#'   the way. `hetero` applies to "gaussian" only. For count families the
+#'   approximate hat matrix is accumulated on the units (nodes or persons)
+#'   with the current Fisher weights, and [ms_vcov()] is not available; use
+#'   [ms_bootstrap()]. "poisson" suits small counts (deaths, events). A large
+#'   Poisson count (mean in the thousands) locates the latent trait more
+#'   finely than the 61 quadrature nodes resolve, which biases the curve;
+#'   fit_ms() warns when this happens. Large counts such as daily steps are
+#'   overdispersed anyway and should use "negbin".
 #' @param n_knots `curve = "ispline"`: number of interior knots, or "AIC"
 #'   (default) to choose among 0 to `max_knots` by `criterion`
 #' @param max_knots largest number of interior knots tried
@@ -108,15 +125,21 @@ fit_ms <- function(grm, Y, sqi, mode = c("fixed", "joint", "eap"),
                    lambda = 20, shrinkage = 0.1, max_iter = 10000,
                    patience = 100, criterion = "AIC", item_every = 5,
                    hetero = TRUE, curve = c("boost", "ispline"),
-                   n_knots = "AIC", max_knots = 5, order = 2) {
+                   n_knots = "AIC", max_knots = 5, order = 2,
+                   family = c("gaussian", "poisson", "negbin")) {
   mode   <- match.arg(mode)
   curve  <- match.arg(curve)
+  family <- match.arg(family)
   Y      <- as.matrix(Y)
   if (anyNA(sqi)) stop("The digital measure must have no missing values.")
+  if (family != "gaussian") check_count(sqi)
   if (curve == "ispline")
     return(fit_ms_ispline(grm, Y, sqi, mode, n_knots = n_knots, max_knots = max_knots,
                           order = order, criterion = criterion, hetero = hetero,
-                          max_iter = min(max_iter, 2000)))
+                          max_iter = min(max_iter, 2000), family = family))
+  if (family != "gaussian")
+    return(fit_ms_count_boost(grm, Y, sqi, mode, family, lambda, shrinkage, max_iter,
+                              patience, criterion, item_every))
   n_obs  <- length(sqi)
   center <- mean(sqi); scale <- sd(sqi)
   y      <- (sqi - center) / scale
@@ -253,7 +276,7 @@ fit_ms <- function(grm, Y, sqi, mode = c("fixed", "joint", "eap"),
        iter = l_use, iter_aic = l_aic, iter_bic = l_bic, df = path$df[l_use + 1],
        stop_reason = stop_reason, path = path, item_ll = item_ll,
        R_coef = if (criterion == "AIC") R_best else NULL,
-       eta_cov = if (mode == "eap") grm$eap else NULL, curve = "boost")
+       eta_cov = if (mode == "eap") grm$eap else NULL, curve = "boost", family = "gaussian")
 }
 
 #' All three methods on one data set

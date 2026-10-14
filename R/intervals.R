@@ -65,6 +65,8 @@ item_vcov <- function(theta, Y, sqi = NULL, act = NULL, h = 1e-4) {
 ms_vcov <- function(fit, Y, sqi) {
   Y <- as.matrix(Y)
   act <- fit$act; hetero <- !is.null(act$log_sigma)
+  if (act_family(act) != "gaussian")
+    stop("ms_vcov() is implemented for the Gaussian family; for a count family use ms_bootstrap().")
   if (fit$mode == "eap") {
     e <- sqi - mu_sqi(fit$eta_cov, act)
     negll <- function(gg) -sum(dnorm(e, 0, exp(gg[1] + gg[2] * fit$eta_cov), log = TRUE))

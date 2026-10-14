@@ -137,7 +137,11 @@ ispline_fit_knots <- function(interior, order, mode, grm, Y, y, hetero, tol, max
 #' The I-spline branch of fit_ms() (curve = "ispline").
 #' @noRd
 fit_ms_ispline <- function(grm, Y, sqi, mode, n_knots = "AIC", max_knots = 5, order = 2,
-                           criterion = "AIC", hetero = TRUE, tol = 1e-9, max_iter = 2000) {
+                           criterion = "AIC", hetero = TRUE, tol = 1e-9, max_iter = 2000,
+                           family = "gaussian") {
+  if (family != "gaussian")
+    return(fit_ms_ispline_count(grm, Y, sqi, mode, n_knots, max_knots, order, criterion,
+                                family, tol, max_iter))
   n_obs  <- length(sqi)
   center <- mean(sqi); scale <- sd(sqi)
   y <- (sqi - center) / scale
@@ -164,7 +168,36 @@ fit_ms_ispline <- function(grm, Y, sqi, mode, n_knots = "AIC", max_knots = 5, or
        coef = c(beta0 = center + scale * f$b0, setNames(scale * f$a_coef, paste0("a", seq_along(f$a_coef)))),
        stop_reason = f$status, path = path,
        item_ll = if (mode == "eap") NULL else item_loglik_nodes(Y, f$a, f$d),
-       R_coef = NULL, eta_cov = if (mode == "eap") grm$eap else NULL)
+       R_coef = NULL, eta_cov = if (mode == "eap") grm$eap else NULL, family = "gaussian")
+}
+
+#' fit_ms_ispline() for a count family: curve on the log scale.
+#' @noRd
+fit_ms_ispline_count <- function(grm, Y, y, mode, n_knots, max_knots, order, criterion,
+                                 family, tol, max_iter) {
+  n_obs <- length(y)
+  cand <- if (identical(n_knots, "AIC")) 0:max_knots else n_knots
+  fits <- lapply(cand, function(k)
+    ispline_fit_knots_count(ispline_knots(k), order, mode, grm, Y, y, family, tol, max_iter))
+  dev <- sapply(fits, function(f) -2 * f$loglik)
+  df  <- sapply(fits, function(f) 1 + f$n_active + (family == "negbin"))
+  path <- data.frame(n_knots = cand, deviance = dev, df = df, aic = dev + 2 * df,
+                     bic = dev + log(n_obs) * df, em_iter = sapply(fits, `[[`, "iter"))
+  pick <- if (length(cand) == 1) 1 else
+    which.min(if (criterion == "BIC") path$bic else path$aic)
+  f <- fits[[pick]]
+  act <- as_count_act(ispline_act(ispline_beta(f$b0, f$a_coef), f$interior, order, NA),
+                      family, f$theta)
+  fit <- list(a = f$a, d = f$d, act = act, mode = mode, curve = "ispline", family = family,
+              converged = grm$converged && f$status == "converged",
+              iter = f$iter, iter_aic = NA_integer_, iter_bic = NA_integer_, df = df[pick],
+              n_knots = cand[pick], knots = f$interior, order = order,
+              coef = c(beta0 = f$b0, setNames(f$a_coef, paste0("a", seq_along(f$a_coef)))),
+              stop_reason = f$status, path = path,
+              item_ll = if (mode == "eap") NULL else item_loglik_nodes(Y, f$a, f$d),
+              R_coef = NULL, eta_cov = if (mode == "eap") grm$eap else NULL)
+  warn_node_collapse(fit, y)
+  fit
 }
 
 #' Normal approximation of the I-spline coefficients: inverse observed

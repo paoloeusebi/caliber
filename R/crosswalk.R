@@ -30,7 +30,8 @@ structural_eta <- function(s, act) {
 #'
 #' `crosswalk_probabilistic()` gives \eqn{E[C_j \mid y = s]} and the expected
 #' total, averaging over \eqn{p(\eta_q \mid s) \propto w_q N(s; \mu(\eta_q),
-#' \sigma(\eta_q)^2)}. `crosswalk()` adds the structural crosswalk
+#' \sigma(\eta_q)^2)} (or the Poisson / negative binomial probability of `s`
+#' for a count curve). `crosswalk()` adds the structural crosswalk
 #' \eqn{E[C_j \mid \eta^*(s)]} (columns `eta_star`, `Estar_*`; NA outside the
 #' curve's range) and prefixes the probabilistic columns with `E_`.
 #' @param grid values of the digital measure
@@ -44,8 +45,11 @@ crosswalk_probabilistic <- function(grid, a, d, act, items = paste0("C", seq_alo
                                     total_name = "total") {
   expected_at_nodes <- sapply(seq_along(a), function(j) grm_expected(nodes, a[j], d[j, ]))
   mu_nodes <- mu_sqi(nodes, act); sd_nodes <- sigma_sqi(nodes, act)
-  w   <- exp(sweep(dnorm(outer(grid, mu_nodes, "-"), 0, rep(sd_nodes, each = length(grid)),
-                         log = TRUE), 2, log_wts, "+"))     # grid x nodes
+  fam <- act_family(act)
+  ld  <- if (fam == "gaussian")
+    dnorm(outer(grid, mu_nodes, "-"), 0, rep(sd_nodes, each = length(grid)), log = TRUE) else
+    count_logdens(grid, mu_nodes, fam, act$theta)
+  w   <- exp(sweep(ld, 2, log_wts, "+"))                 # grid x nodes
   out <- (w %*% expected_at_nodes) / rowSums(w)
   colnames(out) <- items
   out <- as.data.frame(out)
@@ -83,8 +87,10 @@ exceedance_probabilistic <- function(grid, a, d, act, items = paste0("C", seq_al
   p_nodes  <- do.call(cbind, lapply(1:3, function(k) sapply(1:J, function(j)
     plogis(a[j] * nodes + d[j, k]))))                                  # Q x 3J
   mu_nodes <- mu_sqi(nodes, act); sd_nodes <- sigma_sqi(nodes, act)
+  fam <- act_family(act)
   out <- t(sapply(grid, function(s) {
-    w <- exp(log_wts + dnorm(s, mu_nodes, sd_nodes, log = TRUE))
+    w <- exp(log_wts + if (fam == "gaussian") dnorm(s, mu_nodes, sd_nodes, log = TRUE) else
+      drop(count_logdens(s, mu_nodes, fam, act$theta)))
     colSums(w * p_nodes) / sum(w)
   }))
   colnames(out) <- threshold_names(items)
