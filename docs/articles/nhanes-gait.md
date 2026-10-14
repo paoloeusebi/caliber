@@ -6,8 +6,8 @@ on seven lower-body mobility items of the physical functioning
 questionnaire (0 = no difficulty, 1 = some, 2 = much, 3 = unable). The
 latent trait is mobility difficulty; gait speed falls as it rises, so
 the non-increasing curve applies as it is. The analysis data ship with
-the package as the data set `gait` (see
-[`?caliber::gait`](https://paoloeusebi.github.io/caliber/reference/gait.md)),
+the package as the data set `pf_gait` (see
+[`?caliber::pf_gait`](https://paoloeusebi.github.io/caliber/reference/pf_gait.md)),
 which
 [`gait_data()`](https://paoloeusebi.github.io/caliber/reference/gait_data.md)
 returns together with the item matrix; they are built from the
@@ -19,7 +19,7 @@ checks are `inst/scripts/gait_dimensionality.R` (needs lavaan).
 
 ## Data
 
-[`library`](https://rdrr.io/r/base/library.html)`(``caliber``)`` ``#> `` ``#> Attaching package: 'caliber'`` ``#> The following object is masked from 'package:datasets':`` ``#> `` ``#> gait`` ``g`` ``<-`` `[`gait_data`](https://paoloeusebi.github.io/caliber/reference/gait_data.md)`(``)`` ``items`` ``<-`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"C"``, ``1``:``7``)`` `[`c`](https://rdrr.io/r/base/c.html)`(``n ``=`` ``g``$``n``, mean_speed ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(`[`mean`](https://rdrr.io/r/base/mean.html)`(``g``$``speed``)``, ``2``)``, sd_speed ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(`[`sd`](https://rdrr.io/r/stats/sd.html)`(``g``$``speed``)``, ``2``)``)`` ``#> n mean_speed sd_speed `` ``#> 1426.00 0.92 0.26`` `[`colSums`](https://rdrr.io/r/base/colSums.html)`(`[`is.na`](https://rdrr.io/r/base/NA.html)`(``g``$``Y``)``)`` ``# C1, C2 not asked of people who need equipment to walk`` ``#> C1 C2 C3 C4 C5 C6 C7 `` ``#> 105 109 0 2 0 1 14`
+[`library`](https://rdrr.io/r/base/library.html)`(``caliber``)`` ``g`` ``<-`` `[`gait_data`](https://paoloeusebi.github.io/caliber/reference/gait_data.md)`(``)`` ``items`` ``<-`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"C"``, ``1``:``7``)`` `[`c`](https://rdrr.io/r/base/c.html)`(``n ``=`` ``g``$``n``, mean_speed ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(`[`mean`](https://rdrr.io/r/base/mean.html)`(``g``$``speed``)``, ``2``)``, sd_speed ``=`` `[`round`](https://rdrr.io/r/base/Round.html)`(`[`sd`](https://rdrr.io/r/stats/sd.html)`(``g``$``speed``)``, ``2``)``)`` ``#> n mean_speed sd_speed `` ``#> 1426.00 0.92 0.26`` `[`colSums`](https://rdrr.io/r/base/colSums.html)`(`[`is.na`](https://rdrr.io/r/base/NA.html)`(``g``$``Y``)``)`` ``# C1, C2 not asked of people who need equipment to walk`` ``#> C1 C2 C3 C4 C5 C6 C7 `` ``#> 105 109 0 2 0 1 14`
 
 Missing item responses are allowed: they contribute nothing to a
 person’s likelihood. `gait_data(exclude_aids = TRUE)` drops the 161

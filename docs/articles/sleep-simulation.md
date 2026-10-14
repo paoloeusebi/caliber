@@ -21,7 +21,7 @@ returns it without the true trait, which
 [`sleep_eta_true()`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md)
 keeps apart for evaluation.
 
-[`library`](https://rdrr.io/r/base/library.html)`(``caliber``)`` ``#> `` ``#> Attaching package: 'caliber'`` ``#> The following object is masked from 'package:datasets':`` ``#> `` ``#> gait`` ``dat`` ``<-`` `[`sleep_data`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md)`(``)`` ``items`` ``<-`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"C"``, ``1``:``7``)`` ``Y`` ``<-`` `[`as.matrix`](https://rdrr.io/r/base/matrix.html)`(``dat``[``items``]``)``; ``sqi`` ``<-`` ``dat``$``SQI`` `[`summary`](https://rdrr.io/r/base/summary.html)`(``dat``$``PSQI_global``)``; `[`cor`](https://rdrr.io/r/stats/cor.html)`(``dat``$``PSQI_global``, ``sqi``)`` ``#> Min. 1st Qu. Median Mean 3rd Qu. Max. `` ``#> 0.000 4.000 6.000 6.622 9.000 21.000`` ``#> [1] -0.702831`
+[`library`](https://rdrr.io/r/base/library.html)`(``caliber``)`` ``dat`` ``<-`` `[`sleep_data`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md)`(``)`` ``items`` ``<-`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"C"``, ``1``:``7``)`` ``Y`` ``<-`` `[`as.matrix`](https://rdrr.io/r/base/matrix.html)`(``dat``[``items``]``)``; ``sqi`` ``<-`` ``dat``$``SQI`` `[`summary`](https://rdrr.io/r/base/summary.html)`(``dat``$``PSQI_global``)``; `[`cor`](https://rdrr.io/r/stats/cor.html)`(``dat``$``PSQI_global``, ``sqi``)`` ``#> Min. 1st Qu. Median Mean 3rd Qu. Max. `` ``#> 0.000 4.000 6.000 6.622 9.000 21.000`` ``#> [1] -0.702831`
 
 ## Step 1: the GRM on the PSQI alone
 

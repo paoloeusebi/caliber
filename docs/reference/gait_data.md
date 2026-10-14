@@ -6,7 +6,7 @@ scored 0 = no difficulty, 1 = some, 2 = much, 3 = unable (refused and
 don't know missing), for persons aged 60+ with a valid walk time and at
 least one item answered (n = 1,426). Built from the public-use files
 MSX_B, PFQ_B and DEMO_B by \`inst/scripts/gait_data.R\` and shipped as
-\[gait\]. Analyses are unweighted.
+\[pf_gait\]. Analyses are unweighted.
 
 ## Usage
 
@@ -26,8 +26,8 @@ gait_data(exclude_aids = FALSE, skip_unable = FALSE, file = NULL)
 
 - file:
 
-  path to an analysis CSV file with the columns of \[gait\]; \`NULL\`
-  (default) uses the package data set \[gait\]
+  path to an analysis CSV file with the columns of \[pf_gait\]; \`NULL\`
+  (default) uses the package data set \[pf_gait\]
 
 ## Value
 

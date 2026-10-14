@@ -23,8 +23,6 @@
   : Standard summary of one fit
 - [`fit_three()`](https://paoloeusebi.github.io/caliber/reference/fit_three.md)
   : All three methods on one data set
-- [`gait`](https://paoloeusebi.github.io/caliber/reference/gait.md) :
-  NHANES 2001-2002 gait speed and mobility items, ages 60+
 - [`gait_data()`](https://paoloeusebi.github.io/caliber/reference/gait_data.md)
   : The NHANES 2001-2002 gait-speed example
 - [`gait_item_labels`](https://paoloeusebi.github.io/caliber/reference/gait_item_labels.md)
@@ -51,6 +49,8 @@
   : Covariance blocks of a fitted curve and its items
 - [`neg2ll_joint()`](https://paoloeusebi.github.io/caliber/reference/neg2ll_joint.md)
   : Joint deviance of items and digital measure
+- [`pf_gait`](https://paoloeusebi.github.io/caliber/reference/pf_gait.md)
+  : NHANES 2001-2002 gait speed and mobility items, ages 60+
 - [`plausible_values()`](https://paoloeusebi.github.io/caliber/reference/plausible_values.md)
   : One plausible value of the latent trait per person
 - [`plot_expected_scores()`](https://paoloeusebi.github.io/caliber/reference/plot_expected_scores.md)

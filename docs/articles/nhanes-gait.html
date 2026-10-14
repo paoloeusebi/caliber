@@ -70,8 +70,8 @@ read on seven lower-body mobility items of the physical functioning
 questionnaire (0 = no difficulty, 1 = some, 2 = much, 3 = unable). The
 latent trait is mobility difficulty; gait speed falls as it rises, so
 the non-increasing curve applies as it is. The analysis data ship with
-the package as the data set <code>gait</code> (see
-<code><a href="../reference/gait.html">?caliber::gait</a></code>), which <code><a href="../reference/gait_data.html">gait_data()</a></code> returns
+the package as the data set <code>pf_gait</code> (see
+<code><a href="../reference/pf_gait.html">?caliber::pf_gait</a></code>), which <code><a href="../reference/gait_data.html">gait_data()</a></code> returns
 together with the item matrix; they are built from the public-use files
 by <code>inst/scripts/gait_data.R</code>.</p>
 <p>The full analysis (three methods, 200 bootstrap resamples,
@@ -83,11 +83,6 @@ item dimensionality checks are
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">caliber</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'caliber'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:datasets':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     gait</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gait_data.html">gait_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">n</span>, mean_speed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">speed</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, sd_speed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">speed</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>

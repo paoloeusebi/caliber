@@ -22,27 +22,23 @@ comparator).
 | Interpretation | [`threshold_locations()`](https://paoloeusebi.github.io/caliber/reference/threshold_locations.md), [`threshold_flags()`](https://paoloeusebi.github.io/caliber/reference/threshold_flags.md), [`crosswalk()`](https://paoloeusebi.github.io/caliber/reference/crosswalk_probabilistic.md), [`crosswalk_probabilistic()`](https://paoloeusebi.github.io/caliber/reference/crosswalk_probabilistic.md), [`exceedance_probabilistic()`](https://paoloeusebi.github.io/caliber/reference/exceedance_probabilistic.md), [`curve_ends()`](https://paoloeusebi.github.io/caliber/reference/curve_ends.md), [`plausible_values()`](https://paoloeusebi.github.io/caliber/reference/plausible_values.md) |
 | Intervals | [`ms_vcov()`](https://paoloeusebi.github.io/caliber/reference/ms_vcov.md) + [`ms_intervals()`](https://paoloeusebi.github.io/caliber/reference/ms_intervals.md) (items, thresholds, crosswalk), [`ms_bootstrap()`](https://paoloeusebi.github.io/caliber/reference/ms_bootstrap.md) + [`boot_intervals()`](https://paoloeusebi.github.io/caliber/reference/boot_intervals.md) (curve) |
 | Figures | [`wright_map_sqi()`](https://paoloeusebi.github.io/caliber/reference/wright_map_sqi.md), [`plot_expected_scores()`](https://paoloeusebi.github.io/caliber/reference/plot_expected_scores.md) |
-| Example data | `psqi_sleep`, `gait` (data sets); [`sleep_data()`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md), [`sleep_eta_true()`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md), [`simulate_sleep_data()`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md), [`gait_data()`](https://paoloeusebi.github.io/caliber/reference/gait_data.md) |
+| Example data | `psqi_sleep`, `pf_gait` (data sets); [`sleep_data()`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md), [`sleep_eta_true()`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md), [`simulate_sleep_data()`](https://paoloeusebi.github.io/caliber/reference/sleep_data.md), [`gait_data()`](https://paoloeusebi.github.io/caliber/reference/gait_data.md) |
 
 ## Data sets
 
 Both are lazy-loaded
 ([`caliber::psqi_sleep`](https://paoloeusebi.github.io/caliber/reference/psqi_sleep.md),
-[`caliber::gait`](https://paoloeusebi.github.io/caliber/reference/gait.md))
+[`caliber::pf_gait`](https://paoloeusebi.github.io/caliber/reference/pf_gait.md))
 and documented in
 [`?caliber::psqi_sleep`](https://paoloeusebi.github.io/caliber/reference/psqi_sleep.md)
 and
-[`?caliber::gait`](https://paoloeusebi.github.io/caliber/reference/gait.md).
+[`?caliber::pf_gait`](https://paoloeusebi.github.io/caliber/reference/pf_gait.md).
 `data-raw/datasets.R` rebuilds them from the CSV files in `data-raw/`.
-Attaching caliber masks
-[`datasets::gait`](https://rdrr.io/r/datasets/gait.html) (added in R
-4.5); use [`datasets::gait`](https://rdrr.io/r/datasets/gait.html) for
-that one.
 
 | Data set | Rows × columns | Content |
 |----|----|----|
 | `psqi_sleep` | 1000 × 11 | Simulated PSQI components C1–C7, PSQI global, actigraphy SQI and the true trait `eta_true`; `simulate_sleep_data(seed = 20261003)` |
-| `gait` | 1426 × 15 | NHANES 2001–2002 (MSX_B, PFQ_B, DEMO_B), ages 60+, gait speed and seven mobility items; built by `inst/scripts/gait_data.R`, unweighted |
+| `pf_gait` | 1426 × 15 | NHANES 2001–2002 (MSX_B, PFQ_B, DEMO_B), ages 60+, gait speed and seven mobility items; built by `inst/scripts/gait_data.R`, unweighted |
 
 ## Documentation
 

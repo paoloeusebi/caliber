@@ -47,8 +47,8 @@ test_that("the package data objects have the documented shape", {
   expect_equal(dim(caliber::psqi_sleep), c(1000, 11))
   expect_equal(names(caliber::psqi_sleep),
                c("id", paste0("C", 1:7), "PSQI_global", "SQI", "eta_true"))
-  expect_equal(dim(caliber::gait), c(1426, 15))
-  expect_equal(names(caliber::gait),
+  expect_equal(dim(caliber::pf_gait), c(1426, 15))
+  expect_equal(names(caliber::pf_gait),
                c("SEQN", "age", "sex", "walk_time", "gait_speed", "walking_aid",
                  paste0("C", 1:7), "n_items_answered", "needs_equipment"))
 })
@@ -63,10 +63,10 @@ test_that("the accessors return the data objects as before", {
   expect_identical(e$eta_true, caliber::psqi_sleep$eta_true)
   expect_equal(sleep_eta_true()$eta_true, simulate_sleep_data()$eta_true)
   g <- gait_data()
-  expect_identical(g$dat, caliber::gait)
-  expect_identical(g$speed, caliber::gait$gait_speed)
+  expect_identical(g$dat, caliber::pf_gait)
+  expect_identical(g$speed, caliber::pf_gait$gait_speed)
   f <- tempfile(fileext = ".csv")
-  utils::write.csv(caliber::gait, f, row.names = FALSE)
+  utils::write.csv(caliber::pf_gait, f, row.names = FALSE)
   expect_equal(gait_data(file = f)$Y, g$Y)
   unlink(f)
 })

@@ -106,7 +106,7 @@
 <tr>
 <td>Example data</td>
 <td>
-<code>psqi_sleep</code>, <code>gait</code> (data sets); <code><a href="reference/sleep_data.html">sleep_data()</a></code>, <code><a href="reference/sleep_data.html">sleep_eta_true()</a></code>, <code><a href="reference/sleep_data.html">simulate_sleep_data()</a></code>, <code><a href="reference/gait_data.html">gait_data()</a></code>
+<code>psqi_sleep</code>, <code>pf_gait</code> (data sets); <code><a href="reference/sleep_data.html">sleep_data()</a></code>, <code><a href="reference/sleep_data.html">sleep_eta_true()</a></code>, <code><a href="reference/sleep_data.html">simulate_sleep_data()</a></code>, <code><a href="reference/gait_data.html">gait_data()</a></code>
 </td>
 </tr>
 </tbody>
@@ -115,7 +115,7 @@
 <div class="section level2">
 <h2 id="data-sets">Data sets<a class="anchor" aria-label="anchor" href="#data-sets"></a>
 </h2>
-<p>Both are lazy-loaded (<code><a href="reference/psqi_sleep.html">caliber::psqi_sleep</a></code>, <code><a href="reference/gait.html">caliber::gait</a></code>) and documented in <code><a href="reference/psqi_sleep.html">?caliber::psqi_sleep</a></code> and <code><a href="reference/gait.html">?caliber::gait</a></code>. <code>data-raw/datasets.R</code> rebuilds them from the CSV files in <code>data-raw/</code>. Attaching caliber masks <code><a href="https://rdrr.io/r/datasets/gait.html" class="external-link">datasets::gait</a></code> (added in R 4.5); use <code><a href="https://rdrr.io/r/datasets/gait.html" class="external-link">datasets::gait</a></code> for that one.</p>
+<p>Both are lazy-loaded (<code><a href="reference/psqi_sleep.html">caliber::psqi_sleep</a></code>, <code><a href="reference/pf_gait.html">caliber::pf_gait</a></code>) and documented in <code><a href="reference/psqi_sleep.html">?caliber::psqi_sleep</a></code> and <code><a href="reference/pf_gait.html">?caliber::pf_gait</a></code>. <code>data-raw/datasets.R</code> rebuilds them from the CSV files in <code>data-raw/</code>.</p>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -135,7 +135,7 @@
 </td>
 </tr>
 <tr>
-<td><code>gait</code></td>
+<td><code>pf_gait</code></td>
 <td>1426 × 15</td>
 <td>NHANES 2001–2002 (MSX_B, PFQ_B, DEMO_B), ages 60+, gait speed and seven mobility items; built by <code>inst/scripts/gait_data.R</code>, unweighted</td>
 </tr>

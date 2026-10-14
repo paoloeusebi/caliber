@@ -26,7 +26,7 @@
 # Output in $CALIBER_OUT/data (default output/data): gait_analysis.csv,
 # gait_sample_flow.csv, gait_item_counts.csv. Copy gait_analysis.csv to
 # data-raw/ and run data-raw/datasets.R to update the package data set
-# gait (gait_data()).
+# pf_gait (gait_data()).
 # =============================================================================
 
 gait_dir <- Sys.getenv("NHANES_DIR", "data/gait")

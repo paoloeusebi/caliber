@@ -59,4 +59,4 @@
 #'   functioning), PFQ_B (physical functioning) and DEMO_B (demographics),
 #'   National Center for Health Statistics,
 #'   <https://wwwn.cdc.gov/nchs/nhanes/>. Built by `inst/scripts/gait_data.R`.
-"gait"
+"pf_gait"

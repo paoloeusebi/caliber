@@ -18,7 +18,6 @@
 <url><loc>https://paoloeusebi.github.io/caliber/reference/fit_ms.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/fit_summary.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/fit_three.html</loc></url>
-<url><loc>https://paoloeusebi.github.io/caliber/reference/gait.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/gait_data.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/gait_item_labels.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/grm_probs.html</loc></url>
@@ -30,6 +29,7 @@
 <url><loc>https://paoloeusebi.github.io/caliber/reference/ms_quadrature.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/ms_vcov.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/neg2ll_joint.html</loc></url>
+<url><loc>https://paoloeusebi.github.io/caliber/reference/pf_gait.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/plausible_values.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/plot_expected_scores.html</loc></url>
 <url><loc>https://paoloeusebi.github.io/caliber/reference/psqi_sleep.html</loc></url>

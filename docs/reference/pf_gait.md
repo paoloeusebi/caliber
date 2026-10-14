@@ -9,7 +9,7 @@ optionally filtered or recoded, together with the item matrix.
 ## Usage
 
 ``` r
-gait
+pf_gait
 ```
 
 ## Format

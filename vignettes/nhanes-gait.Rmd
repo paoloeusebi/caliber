@@ -17,7 +17,7 @@ lower-body mobility items of the physical functioning questionnaire (0 = no
 difficulty, 1 = some, 2 = much, 3 = unable). The latent trait is mobility
 difficulty; gait speed falls as it rises, so the non-increasing curve applies
 as it is. The analysis data ship with the package as the data set
-`gait` (see `?caliber::gait`), which `gait_data()` returns together with
+`pf_gait` (see `?caliber::pf_gait`), which `gait_data()` returns together with
 the item matrix; they are built from the public-use files by
 `inst/scripts/gait_data.R`.
 
