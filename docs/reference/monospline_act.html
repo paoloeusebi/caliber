@@ -4,12 +4,16 @@
 range, beta, type)`; `ispline_act()` builds the same object for a curve
 fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate the mean
 \(\mu(\eta)\) and the residual SD \(\sigma(\eta)\) (constant, or
-\(\exp(g_0 + g_1 \eta)\)).'><meta property="og:description" content='`monospline_act()` builds the curve object used everywhere in the package:
+\(\exp(g_0 + g_1 \eta)\)). For a count family (`fit_ms(family =
+"poisson")` or `"negbin"`) `mu_sqi()` is the mean count and `sigma_sqi()`
+the SD implied by the family.'><meta property="og:description" content='`monospline_act()` builds the curve object used everywhere in the package:
 `list(mu = function(eta), sigma = sigma(0), log_sigma = c(g0, g1) or NULL,
 range, beta, type)`; `ispline_act()` builds the same object for a curve
 fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate the mean
 \(\mu(\eta)\) and the residual SD \(\sigma(\eta)\) (constant, or
-\(\exp(g_0 + g_1 \eta)\)).'></head><body>
+\(\exp(g_0 + g_1 \eta)\)). For a count family (`fit_ms(family =
+"poisson")` or `"negbin"`) `mu_sqi()` is the mean count and `sigma_sqi()`
+the SD implied by the family.'></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,6 +37,7 @@ fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate t
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/paoloeusebi/caliber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -42,7 +47,7 @@ fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate t
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>The equation of the digital measure</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/paoloeusebi/caliber/blob/HEAD/R/ispline.R" class="external-link"><code>R/ispline.R</code></a>, <a href="https://github.com/paoloeusebi/caliber/blob/HEAD/R/spline.R" class="external-link"><code>R/spline.R</code></a></small>
       <div class="d-none name"><code>monospline_act.Rd</code></div>
     </div>
 
@@ -52,7 +57,9 @@ fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate t
 range, beta, type)`; `ispline_act()` builds the same object for a curve
 fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate the mean
 \(\mu(\eta)\) and the residual SD \(\sigma(\eta)\) (constant, or
-\(\exp(g_0 + g_1 \eta)\)).</p>
+\(\exp(g_0 + g_1 \eta)\)). For a count family (`fit_ms(family =
+"poisson")` or `"negbin"`) `mu_sqi()` is the mean count and `sigma_sqi()`
+the SD implied by the family.</p>
     </div>
 
     <div class="section level2">

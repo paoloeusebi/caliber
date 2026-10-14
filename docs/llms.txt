@@ -15,6 +15,21 @@ of I-splines on a few interior knots at quantiles of the latent N(0, 1),
 fitted by maximum likelihood, with the number of knots chosen by AIC.
 Boosting stays the default.
 
+The digital measure can be continuous (`family = "gaussian"`, the
+default: actigraphy indices, gait speed, distance) or a count
+(`family = "poisson"` or `"negbin"`: daily steps, events, deaths). For
+counts the spline models log E\[y \| η\], with either curve method; θ of
+the negative binomial is estimated by ML. Use Poisson for small counts
+(events, deaths) and the negative binomial for large, overdispersed ones
+(steps): a Poisson count in the thousands locates the trait more finely
+than the quadrature resolves, and
+[`fit_ms()`](https://paoloeusebi.github.io/caliber/reference/fit_ms.md)
+warns. Normal-approximation intervals
+([`ms_vcov()`](https://paoloeusebi.github.io/caliber/reference/ms_vcov.md))
+are Gaussian-only; use
+[`ms_bootstrap()`](https://paoloeusebi.github.io/caliber/reference/ms_bootstrap.md)
+for counts.
+
 ## Install (from this folder)
 
 [`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"mirt"``, ``"statmod"``, ``"ggplot2"``, ``"patchwork"``, ``"scales"``, ``"viridisLite"``)``)`` ``roxygen2``::`[`roxygenise`](https://roxygen2.r-lib.org/reference/roxygenize.html)`(``"."``)`` ``# builds man/ (and checks NAMESPACE)`` ``devtools``::`[`install`](https://devtools.r-lib.org/reference/install.html)`(``"."``)`` ``# or: R CMD build . && R CMD INSTALL caliber_0.1.0.tar.gz`

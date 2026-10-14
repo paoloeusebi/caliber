@@ -24,7 +24,8 @@ fit_ms(
   curve = c("boost", "ispline"),
   n_knots = "AIC",
   max_knots = 5,
-  order = 2
+  order = 2,
+  family = c("gaussian", "poisson", "negbin")
 )
 ```
 
@@ -101,6 +102,27 @@ fit_ms(
 
   I-spline order k (default 2, piecewise quadratic I-splines, so the
   curve is a quadratic spline with continuous slope)
+
+- family:
+
+  distribution of the digital measure given the latent trait. "gaussian"
+  (default): a continuous measure (actigraphy index, gait speed,
+  distance), normal with the mean curve and a constant or log-linear SD.
+  "poisson" or "negbin" (negative binomial, Var = mu + mu^2 / theta): a
+  count measure (daily steps, events, deaths); the spline is then fitted
+  on the log scale, log E\[y \| eta\] = f(eta) non-increasing, by the
+  GLM version of the boosting (Leitenstorfer and Tutz 2007: penalised
+  Fisher-scoring steps with the Fisher weights of the family,
+  deviance-based split choice and AIC stop) or by the I-spline ML fit.
+  theta is estimated by ML along the way. \`hetero\` applies to
+  "gaussian" only. For count families the approximate hat matrix is
+  accumulated on the units (nodes or persons) with the current Fisher
+  weights, and \[ms_vcov()\] is not available; use \[ms_bootstrap()\].
+  "poisson" suits small counts (deaths, events). A large Poisson count
+  (mean in the thousands) locates the latent trait more finely than the
+  61 quadrature nodes resolve, which biases the curve; fit_ms() warns
+  when this happens. Large counts such as daily steps are overdispersed
+  anyway and should use "negbin".
 
 ## Value
 

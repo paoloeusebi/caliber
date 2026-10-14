@@ -42,6 +42,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/paoloeusebi/caliber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -58,7 +59,7 @@
       <h1>Sleep example: actigraphy SQI read on the PSQI components</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/paoloeusebi/caliber/blob/HEAD/vignettes/sleep-simulation.Rmd" class="external-link"><code>vignettes/sleep-simulation.Rmd</code></a></small>
       <div class="d-none name"><code>sleep-simulation.Rmd</code></div>
     </div>
 
@@ -82,7 +83,7 @@ not run; the full analysis scripts are in
 <code><a href="../reference/sleep_data.html">sleep_data()</a></code> returns it without the true trait, which
 <code><a href="../reference/sleep_data.html">sleep_eta_true()</a></code> keeps apart for evaluation.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">caliber</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://paoloeusebi.github.io/caliber">caliber</a></span><span class="op">)</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sleep_data.html">sleep_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span><span class="va">items</span><span class="op">]</span><span class="op">)</span>; <span class="va">sqi</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">$</span><span class="va">SQI</span></span>

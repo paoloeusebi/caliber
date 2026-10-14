@@ -29,6 +29,7 @@ three ways (the boosting steps, tuning values and stopping rule are the same):">
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/paoloeusebi/caliber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -38,7 +39,7 @@ three ways (the boosting steps, tuning values and stopping rule are the same):">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Fit the monotone curve</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/paoloeusebi/caliber/blob/HEAD/R/fit_ms.R" class="external-link"><code>R/fit_ms.R</code></a></small>
       <div class="d-none name"><code>fit_ms.Rd</code></div>
     </div>
 
@@ -66,7 +67,8 @@ three ways (the boosting steps, tuning values and stopping rule are the same):</
 <span>  curve <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"boost"</span>, <span class="st">"ispline"</span><span class="op">)</span>,</span>
 <span>  n_knots <span class="op">=</span> <span class="st">"AIC"</span>,</span>
 <span>  max_knots <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  order <span class="op">=</span> <span class="fl">2</span></span>
+<span>  order <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gaussian"</span>, <span class="st">"poisson"</span>, <span class="st">"negbin"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -143,6 +145,26 @@ and `max_iter` caps the EM iterations.</p></dd>
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
 <dd><p>I-spline order k (default 2, piecewise quadratic I-splines, so
 the curve is a quadratic spline with continuous slope)</p></dd>
+
+
+<dt id="arg-family">family<a class="anchor" aria-label="anchor" href="#arg-family"></a></dt>
+<dd><p>distribution of the digital measure given the latent trait.
+"gaussian" (default): a continuous measure (actigraphy index, gait speed,
+distance), normal with the mean curve and a constant or log-linear SD.
+"poisson" or "negbin" (negative binomial, Var = mu + mu^2 / theta): a
+count measure (daily steps, events, deaths); the spline is then fitted on
+the log scale, log E[y | eta] = f(eta) non-increasing, by the GLM version
+of the boosting (Leitenstorfer and Tutz 2007: penalised Fisher-scoring
+steps with the Fisher weights of the family, deviance-based split choice
+and AIC stop) or by the I-spline ML fit. theta is estimated by ML along
+the way. `hetero` applies to "gaussian" only. For count families the
+approximate hat matrix is accumulated on the units (nodes or persons)
+with the current Fisher weights, and [ms_vcov()] is not available; use
+[ms_bootstrap()]. "poisson" suits small counts (deaths, events). A large
+Poisson count (mean in the thousands) locates the latent trait more
+finely than the 61 quadrature nodes resolve, which biases the curve;
+fit_ms() warns when this happens. Large counts such as daily steps are
+overdispersed anyway and should use "negbin".</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -2,8 +2,9 @@
 
 \`crosswalk_probabilistic()\` gives \\E\[C_j \mid y = s\]\\ and the
 expected total, averaging over \\p(\eta_q \mid s) \propto w_q N(s;
-\mu(\eta_q), \sigma(\eta_q)^2)\\. \`crosswalk()\` adds the structural
-crosswalk \\E\[C_j \mid \eta^\*(s)\]\\ (columns \`eta_star\`,
+\mu(\eta_q), \sigma(\eta_q)^2)\\ (or the Poisson / negative binomial
+probability of \`s\` for a count curve). \`crosswalk()\` adds the
+structural crosswalk \\E\[C_j \mid \eta^\*(s)\]\\ (columns \`eta_star\`,
 \`Estar\_\*\`; NA outside the curve's range) and prefixes the
 probabilistic columns with \`E\_\`.
 

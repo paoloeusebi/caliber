@@ -35,6 +35,16 @@ sleep-quality index of the worked example); any continuous measure that
 falls with the latent trait can be used (gait speed in the NHANES
 example).
 
+## See also
+
+Useful links:
+
+- <https://paoloeusebi.github.io/caliber>
+
+- <https://github.com/paoloeusebi/caliber>
+
+- Report bugs at <https://github.com/paoloeusebi/caliber/issues>
+
 ## Author
 
 **Maintainer**: Paolo Eusebi <paoloeusebi@gmail.com>

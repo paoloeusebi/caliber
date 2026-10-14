@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Monotone Calibration of a Digital Measure to a Multi-Item PRO">
-<meta name="description" content="Places the item thresholds of an ordinal multi-item patient-reported outcome (PRO) on the scale of a continuous digital or performance measure. One latent trait drives both instruments: the PRO items follow a logistic graded response model (GRM), and the digital measure depends on the trait through a non-increasing cubic B-spline with log-linear residual SD, fitted by monotonic likelihood boosting (Leitenstorfer and Tutz 2007) with the AIC stop, or alternatively by Ramsays (1988) monotone regression splines (I-splines with non-negative coefficients, fitted by maximum likelihood). Three ways of handling the latent trait are implemented: concurrent calibration (MS-Joint), EAP plug-in (MS-EAP) and fixed-item calibration (MS-Fixed). Outputs are thresholds in the digital measures units, structural and probabilistic crosswalks, exceedance probabilities, Wright maps, and hybrid intervals (normal-approximation draws for item and threshold quantities, nonparametric bootstrap for the curve).">
-<meta property="og:description" content="Places the item thresholds of an ordinal multi-item patient-reported outcome (PRO) on the scale of a continuous digital or performance measure. One latent trait drives both instruments: the PRO items follow a logistic graded response model (GRM), and the digital measure depends on the trait through a non-increasing cubic B-spline with log-linear residual SD, fitted by monotonic likelihood boosting (Leitenstorfer and Tutz 2007) with the AIC stop, or alternatively by Ramsays (1988) monotone regression splines (I-splines with non-negative coefficients, fitted by maximum likelihood). Three ways of handling the latent trait are implemented: concurrent calibration (MS-Joint), EAP plug-in (MS-EAP) and fixed-item calibration (MS-Fixed). Outputs are thresholds in the digital measures units, structural and probabilistic crosswalks, exceedance probabilities, Wright maps, and hybrid intervals (normal-approximation draws for item and threshold quantities, nonparametric bootstrap for the curve).">
+<meta name="description" content="Places the item thresholds of an ordinal multi-item patient-reported outcome (PRO) on the scale of a continuous digital or performance measure. One latent trait drives both instruments: the PRO items follow a logistic graded response model (GRM), and the digital measure depends on the trait through a non-increasing cubic B-spline with log-linear residual SD, fitted by monotonic likelihood boosting (Leitenstorfer and Tutz 2007) with the AIC stop, or alternatively by Ramsays (1988) monotone regression splines (I-splines with non-negative coefficients, fitted by maximum likelihood). The measure can be continuous (Gaussian) or a count (Poisson or negative binomial, with the spline on the log mean). Three ways of handling the latent trait are implemented: concurrent calibration (MS-Joint), EAP plug-in (MS-EAP) and fixed-item calibration (MS-Fixed). Outputs are thresholds in the digital measures units, structural and probabilistic crosswalks, exceedance probabilities, Wright maps, and hybrid intervals (normal-approximation draws for item and threshold quantities, nonparametric bootstrap for the curve).">
+<meta property="og:description" content="Places the item thresholds of an ordinal multi-item patient-reported outcome (PRO) on the scale of a continuous digital or performance measure. One latent trait drives both instruments: the PRO items follow a logistic graded response model (GRM), and the digital measure depends on the trait through a non-increasing cubic B-spline with log-linear residual SD, fitted by monotonic likelihood boosting (Leitenstorfer and Tutz 2007) with the AIC stop, or alternatively by Ramsays (1988) monotone regression splines (I-splines with non-negative coefficients, fitted by maximum likelihood). The measure can be continuous (Gaussian) or a count (Poisson or negative binomial, with the spline on the log mean). Three ways of handling the latent trait are implemented: concurrent calibration (MS-Joint), EAP plug-in (MS-EAP) and fixed-item calibration (MS-Fixed). Outputs are thresholds in the digital measures units, structural and probabilistic crosswalks, exceedance probabilities, Wright maps, and hybrid intervals (normal-approximation draws for item and threshold quantities, nonparametric bootstrap for the curve).">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -44,6 +44,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/paoloeusebi/caliber/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -56,6 +57,7 @@
 </h1></div>
 <p>Monotone calibration of a digital or performance measure to a multi-item PRO. One latent trait drives the PRO items (graded response model, items scored 0 to 3) and the digital measure (non-increasing cubic B-spline mean, log-linear residual SD). The curve is fitted by monotonic likelihood boosting (Leitenstorfer and Tutz 2007) in three ways: MS-Fixed (fixed-item calibration, the recommended primary analysis), MS-Joint (concurrent calibration) and MS-EAP (EAP plug-in, the naive comparator).</p>
 <p>The curve can instead be fitted with Ramsay’s (1988) monotone regression splines (<code>fit_ms(..., curve = "ispline")</code>): a non-negative combination of I-splines on a few interior knots at quantiles of the latent N(0, 1), fitted by maximum likelihood, with the number of knots chosen by AIC. Boosting stays the default.</p>
+<p>The digital measure can be continuous (<code>family = "gaussian"</code>, the default: actigraphy indices, gait speed, distance) or a count (<code>family = "poisson"</code> or <code>"negbin"</code>: daily steps, events, deaths). For counts the spline models log E[y | η], with either curve method; θ of the negative binomial is estimated by ML. Use Poisson for small counts (events, deaths) and the negative binomial for large, overdispersed ones (steps): a Poisson count in the thousands locates the trait more finely than the quadrature resolves, and <code><a href="reference/fit_ms.html">fit_ms()</a></code> warns. Normal-approximation intervals (<code><a href="reference/ms_vcov.html">ms_vcov()</a></code>) are Gaussian-only; use <code><a href="reference/ms_bootstrap.html">ms_bootstrap()</a></code> for counts.</p>
 <div class="section level2">
 <h2 id="install-from-this-folder">Install (from this folder)<a class="anchor" aria-label="anchor" href="#install-from-this-folder"></a>
 </h2>
@@ -212,7 +214,15 @@
 <p>The reported results of the manuscript were produced by the project scripts of 8 October (sleep) and 11 October (gait), before this package. With <code>MS_DRAWS = 0</code> the package scripts should reproduce them; <code>CHECK_NOTES.md</code> records whether that was confirmed.</p>
 </div>
 </div>
-  </main><aside class="col-md-3"><div class="license">
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/paoloeusebi/caliber/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/paoloeusebi/caliber/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
