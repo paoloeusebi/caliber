@@ -28,10 +28,11 @@ select_split <- function(S1, S2, N, Sy, Syy, mu, sigma_u, lambda, shrinkage) {
   best
 }
 
-#' Fit the monotone curve by monotonic likelihood boosting
+#' Fit the monotone curve
 #'
 #' Monotone B-spline equation of the digital measure by monotonic likelihood
-#' boosting (Leitenstorfer and Tutz 2007, GMBBoost), in one of
+#' boosting (Leitenstorfer and Tutz 2007, GMBBoost; the default) or by
+#' Ramsay's (1988) monotone regression splines (`curve = "ispline"`), in one of
 #' three ways (the boosting steps, tuning values and stopping rule are the same):
 #'
 #'  "fixed"  MS-Fixed. Items held at the GRM estimates. Each iteration: E-step
@@ -76,20 +77,46 @@ select_split <- function(S1, S2, N, Sy, Syy, mu, sigma_u, lambda, shrinkage) {
 #' @param item_every MS-Joint: item M-step every this many iterations
 #' @param hetero TRUE (default) for log sigma(eta) = g0 + g1 eta, FALSE for a
 #'   constant residual SD (sensitivity analysis)
+#' @param curve "boost" (default): monotonic likelihood boosting of the
+#'   24-coefficient B-spline, as above. "ispline": Ramsay's (1988) monotone
+#'   regression spline, \eqn{\mu(\eta) = \beta_0 - \sum_m a_m I_m(\eta)},
+#'   \eqn{a_m \ge 0}, with I-splines of order `order` on `n_knots` interior
+#'   knots at quantiles of N(0, 1) (see [ispline_knots()]), fitted by maximum
+#'   likelihood under the bounds (EM over the nodes for "fixed" and "joint",
+#'   direct for "eap"). The three ways of handling the latent trait are the
+#'   same. `lambda`, `shrinkage`, `patience` and `item_every` are then unused,
+#'   and `max_iter` caps the EM iterations.
+#' @param n_knots `curve = "ispline"`: number of interior knots, or "AIC"
+#'   (default) to choose among 0 to `max_knots` by `criterion`
+#' @param max_knots largest number of interior knots tried
+#' @param order I-spline order k (default 2, piecewise quadratic I-splines, so
+#'   the curve is a quadratic spline with continuous slope)
 #' @return list(a, d, act, mode, converged, iter, iter_aic, iter_bic, df,
 #'   stop_reason, path, item_ll (not for "eap"), R_coef (coefficient operator
-#'   at the AIC stop, used by [ms_vcov()]), eta_cov (EAP scores, "eap" only))
+#'   at the AIC stop, used by [ms_vcov()]), eta_cov (EAP scores, "eap" only),
+#'   curve). For `curve = "ispline"`, `iter` is the number of EM iterations,
+#'   `path` the knot selection table, `R_coef` NULL, and the result also has
+#'   n_knots, knots, order and coef (beta0 and the I-spline coefficients).
 #' @references Leitenstorfer F, Tutz G (2007). Generalized monotonic regression
 #'   based on B-splines with an application to air pollution data.
 #'   Biostatistics 8, 654-673.
+#'
+#'   Ramsay JO (1988). Monotone regression splines in action. Statistical
+#'   Science 3, 425-461.
 #' @export
 fit_ms <- function(grm, Y, sqi, mode = c("fixed", "joint", "eap"),
                    lambda = 20, shrinkage = 0.1, max_iter = 10000,
                    patience = 100, criterion = "AIC", item_every = 5,
-                   hetero = TRUE) {
+                   hetero = TRUE, curve = c("boost", "ispline"),
+                   n_knots = "AIC", max_knots = 5, order = 2) {
   mode   <- match.arg(mode)
+  curve  <- match.arg(curve)
   Y      <- as.matrix(Y)
   if (anyNA(sqi)) stop("The digital measure must have no missing values.")
+  if (curve == "ispline")
+    return(fit_ms_ispline(grm, Y, sqi, mode, n_knots = n_knots, max_knots = max_knots,
+                          order = order, criterion = criterion, hetero = hetero,
+                          max_iter = min(max_iter, 2000)))
   n_obs  <- length(sqi)
   center <- mean(sqi); scale <- sd(sqi)
   y      <- (sqi - center) / scale
@@ -226,7 +253,7 @@ fit_ms <- function(grm, Y, sqi, mode = c("fixed", "joint", "eap"),
        iter = l_use, iter_aic = l_aic, iter_bic = l_bic, df = path$df[l_use + 1],
        stop_reason = stop_reason, path = path, item_ll = item_ll,
        R_coef = if (criterion == "AIC") R_best else NULL,
-       eta_cov = if (mode == "eap") grm$eap else NULL)
+       eta_cov = if (mode == "eap") grm$eap else NULL, curve = "boost")
 }
 
 #' All three methods on one data set

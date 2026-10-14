@@ -53,7 +53,11 @@ item_vcov <- function(theta, Y, sqi = NULL, act = NULL, h = 1e-4) {
 #' (observed information of the packed parameters), spline coefficients
 #' (linearised boosting operator at the AIC stop, sandwich with squared
 #' residuals) and (g0, g1) (inverse Hessian given the curve). Conditional on
-#' the boosting path; see [ms_intervals()].
+#' the boosting path; see [ms_intervals()]. For an I-spline fit
+#' (`curve = "ispline"`) the curve block is the inverse observed information
+#' of the intercept and the non-zero I-spline coefficients given items and
+#' (g0, g1), with coefficients estimated at zero treated as fixed (Ramsay
+#' 1988), conditional on the selected knots.
 #' @param fit a [fit_ms()] result (fitted with `criterion = "AIC"`)
 #' @param Y,sqi the data it was fitted to
 #' @return list(theta, V_items, beta, V_beta, g, V_g, hetero)
@@ -68,16 +72,18 @@ ms_vcov <- function(fit, Y, sqi) {
     p_c <- row_posterior(sweep(fit$item_ll, 2, log_wts, "+"))           # p(eta | C)
     e   <- sqi - drop(p_c %*% mu_sqi(nodes, act))
     negll <- function(gg) -sum(row_log_sum_exp(
-      log_joint_nodes(fit$item_ll, sqi, monospline_act(act$beta, NA, gg))))
+      log_joint_nodes(fit$item_ll, sqi, act_with(act, act$beta, NA, gg))))
   }
+  ispline <- identical(act$type, "ispline")
   R <- fit$R_coef
-  if (is.null(R)) stop("fit_ms() was not run with criterion = \"AIC\".")
+  if (!ispline && is.null(R)) stop("fit_ms() was not run with criterion = \"AIC\".")
   g <- if (hetero) act$log_sigma else c(log(act$sigma), 0)
   V_g <- if (hetero) solve(optimHess(g, negll)) else
     diag(c(1 / optimHess(g[1], function(v) negll(c(v, 0)))[1], 0))
   theta <- unlist(lapply(seq_len(ncol(Y)), function(j) item_pack(fit$a[j], fit$d[j, ])))
   V_items <- if (fit$mode == "joint") item_vcov(theta, Y, sqi, act) else item_vcov(theta, Y)
-  list(theta = theta, V_items = V_items, beta = act$beta, V_beta = R %*% (e^2 * t(R)),
+  V_beta <- if (ispline) ispline_vcov_beta(fit, sqi) else R %*% (e^2 * t(R))
+  list(theta = theta, V_items = V_items, beta = act$beta, V_beta = V_beta,
        g = g, V_g = V_g, hetero = hetero)
 }
 
@@ -117,7 +123,7 @@ ms_intervals <- function(fit, vc, target, n_draw = 1000, level = 0.95, seed = NU
   draws <- sapply(seq_len(n_draw), function(r) {
     par  <- lapply(1:J, function(j) item_unpack(th[r, 4 * j - 3:0]))
     beta <- -isoreg(-bt[r, ])$yf                       # nearest non-increasing curve
-    act  <- if (vc$hetero) monospline_act(beta, NA, gg[r, ]) else monospline_act(beta, exp(gg[r, 1]))
+    act  <- if (vc$hetero) act_with(fit$act, beta, NA, gg[r, ]) else act_with(fit$act, beta, exp(gg[r, 1]))
     target(sapply(par, `[[`, "a"), t(sapply(par, `[[`, "d")), act)
   })
   draws <- matrix(draws, ncol = n_draw)

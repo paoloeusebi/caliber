@@ -7,6 +7,11 @@ fitted by monotonic likelihood boosting (Leitenstorfer and Tutz 2007) in three w
 MS-Fixed (fixed-item calibration, the recommended primary analysis), MS-Joint (concurrent
 calibration) and MS-EAP (EAP plug-in, the naive comparator).
 
+The curve can instead be fitted with Ramsay's (1988) monotone regression splines
+(`fit_ms(..., curve = "ispline")`): a non-negative combination of I-splines on a few interior
+knots at quantiles of the latent N(0, 1), fitted by maximum likelihood, with the number of
+knots chosen by AIC. Boosting stays the default.
+
 ## Install (from this folder)
 
 ```r
@@ -20,7 +25,7 @@ devtools::install(".")         # or: R CMD build . && R CMD INSTALL caliber_0.1.
 | Step | Functions |
 | --- | --- |
 | GRM on the PRO | `fit_grm()` |
-| Curve | `fit_ms()`, `fit_three()`, `mu_sqi()`, `sigma_sqi()` |
+| Curve | `fit_ms()` (`curve = "boost"` or `"ispline"`), `fit_three()`, `mu_sqi()`, `sigma_sqi()`, `ispline_basis()`, `ispline_knots()` |
 | Interpretation | `threshold_locations()`, `threshold_flags()`, `crosswalk()`, `crosswalk_probabilistic()`, `exceedance_probabilistic()`, `curve_ends()`, `plausible_values()` |
 | Intervals | `ms_vcov()` + `ms_intervals()` (items, thresholds, crosswalk), `ms_bootstrap()` + `boot_intervals()` (curve) |
 | Figures | `wright_map_sqi()`, `plot_expected_scores()` |

@@ -23,7 +23,8 @@ bspline_basis <- function(eta) {
 #'
 #' `monospline_act()` builds the curve object used everywhere in the package:
 #' `list(mu = function(eta), sigma = sigma(0), log_sigma = c(g0, g1) or NULL,
-#' range, beta)`. `mu_sqi()` and `sigma_sqi()` evaluate the mean
+#' range, beta, type)`; `ispline_act()` builds the same object for a curve
+#' fitted with `fit_ms(curve = "ispline")`. `mu_sqi()` and `sigma_sqi()` evaluate the mean
 #' \eqn{\mu(\eta)} and the residual SD \eqn{\sigma(\eta)} (constant, or
 #' \eqn{\exp(g_0 + g_1 \eta)}).
 #' @param beta 24 non-increasing spline coefficients
@@ -35,7 +36,7 @@ bspline_basis <- function(eta) {
 monospline_act <- function(beta, sigma, log_sigma = NULL)
   list(mu = function(eta) drop(bspline_basis(eta) %*% beta),
        sigma = if (is.null(log_sigma)) sigma else exp(log_sigma[1]),
-       log_sigma = log_sigma, range = spline_range, beta = beta)
+       log_sigma = log_sigma, range = spline_range, beta = beta, type = "bspline")
 
 #' @rdname monospline_act
 #' @export

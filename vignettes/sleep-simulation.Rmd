@@ -57,6 +57,22 @@ c(iter = fit$iter, df = round(fit$df, 2), sigma0 = round(fit$act$sigma, 2),
 round(mu_sqi(-3:3, fit$act), 1)
 ```
 
+### Alternative curve: Ramsay's monotone regression splines
+
+`fit_ms(curve = "ispline")` replaces the boosting by Ramsay's (1988) monotone
+regression splines: μ(η) = β0 − Σ a_m I_m(η) with a_m ≥ 0, I-splines of order 2
+on a few interior knots at quantiles of N(0, 1) (median, terciles, ...), fitted
+by maximum likelihood under the bounds. The number of knots is chosen by AIC
+among 0 to 5. The three ways of handling the latent trait are the same.
+
+```{r ispline}
+fit_i <- fit_ms(grm, Y, sqi, mode = "fixed", curve = "ispline")
+fit_i$path[c("n_knots", "deviance", "df", "aic")]
+c(n_knots = fit_i$n_knots, sigma0 = round(fit_i$act$sigma, 2),
+  g1 = round(fit_i$act$log_sigma[2], 3))
+round(rbind(boosting = mu_sqi(-3:3, fit$act), ispline = mu_sqi(-3:3, fit_i$act)), 1)
+```
+
 ## Step 3: interpretation in SQI units
 
 Each GRM threshold b_jk is placed on the SQI scale at s_jk = μ(b_jk).
