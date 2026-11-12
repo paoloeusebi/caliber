@@ -2,6 +2,9 @@
 # sleep_simulation_summary.R  --  Tables and figures from the simulation
 #
 # Run after sleep_simulation.R, with the same MS_HETERO, MS_DRAWS and CALIBER_OUT.
+# Notation in the tables and figures: X is the multi-item scale (items X1..X7,
+# stored as C1..C7; X total = their sum, stored as PSQI) and Y the digital
+# measure (stored as sqi).
 # Outputs: data/ms_sim_summary*.csv, data/ms_sim_threshold_summary*.csv,
 #          figures/ms_sim_thresholds*.png, ms_sim_sqi_curves*.png,
 #          ms_sim_crosswalk_curves*.png, ms_sim_crosswalk_error*.png
@@ -19,6 +22,8 @@ res  <- readRDS(file.path(out, "data", paste0("ms_sim_results", suffix, ".rds"))
 rows <- res$rows
 sc_names  <- names(scenarios)
 sc_labels <- sapply(scenarios, `[[`, "label")
+x_items   <- setNames(sub("^C", "X", items), items)            # labels X1..X7
+fig_h     <- function(per_row) 1.5 + per_row * ceiling(length(scenarios) / 3)
 true_thr  <- lapply(res$truths, function(t) c(t$thr))      # item-major within k
 s_cols    <- paste0("s_", thr_names)
 k_of      <- rep(1:3, each = n_items)
@@ -62,7 +67,7 @@ thr_tab <- do.call(rbind, lapply(sc_names, function(sc) do.call(rbind, lapply(me
 }))))
 write.csv(thr_tab, file.path(out, "data", paste0("ms_sim_threshold_summary", suffix, ".csv")), row.names = FALSE)
 
-cat("Pooled threshold RMSE (MC SE) / crosswalk wRMSE mean over C1..C7 (PSQI total)\n")
+cat("Pooled threshold RMSE (MC SE) / crosswalk wRMSE mean over X1..X7 (X total)\n")
 for (sc in sc_names) {
   s <- summary_tab[summary_tab$scenario == sc, ]
   cat(sprintf("%-16s %s\n", sc, paste(sprintf("%s %.2f (%.2f) k3 %.2f | cw %.3f (%.3f)",
@@ -95,12 +100,12 @@ p1 <- ggplot(long, aes(rmse, sc, colour = method, shape = method)) +
   scale_colour_manual(values = method_cols, labels = method_lab, breaks = methods, name = NULL) +
   scale_shape_manual(values = method_shapes, labels = method_lab, breaks = methods, name = NULL) +
   expand_limits(x = 0) +
-  labs(x = "RMSE of threshold location on the SQI scale (SQI points)", y = NULL,
+  labs(x = "RMSE of threshold location on the Y scale (Y units)", y = NULL,
        title = if (res$hetero) NULL else "Constant residual SD (sensitivity analysis)",
        caption = sprintf(paste0("%d replications per scenario, n = 1000. Thresholds: mu-hat(b-hat_jk) ",
-                                "against the true m(b_jk). Bars: 95%% Monte Carlo interval."), res$n_reps)) +
+                                "against the true E[Y | eta = b_jk]. Bars: 95%% Monte Carlo interval."), res$n_reps)) +
   base_theme
-ggsave(file.path(out, "figures", paste0("ms_sim_thresholds", suffix, ".png")), p1, width = 12, height = 5, dpi = 200, bg = "white")
+ggsave(file.path(out, "figures", paste0("ms_sim_thresholds", suffix, ".png")), p1, width = 12, height = 2 + 0.5 * length(scenarios), dpi = 200, bg = "white")
 
 # 2. Mean estimated SQI curve (with the 5-95% range over replications) vs truth
 curves <- do.call(rbind, lapply(seq_along(res$mu), function(i)
@@ -122,10 +127,10 @@ p2 <- ggplot(agg, aes(eta)) +
   scale_colour_manual(values = method_cols, labels = method_lab, breaks = methods, name = NULL) +
   scale_fill_manual(values = method_cols, labels = method_lab, breaks = methods, name = NULL) +
   coord_cartesian(ylim = c(10, 95)) +
-  labs(x = "Latent sleep disturbance (eta)", y = "mu(eta) = E[SQI | eta]",
-       caption = "Solid: mean estimate over replications; shaded: 5th to 95th percentile; dashed: truth m(eta).") +
+  labs(x = "Latent trait of X (eta)", y = "mu(eta) = E[Y | eta]",
+       caption = "Solid: mean estimate over replications; shaded: 5th to 95th percentile; dashed: truth E[Y | eta].") +
   base_theme
-ggsave(file.path(out, "figures", paste0("ms_sim_sqi_curves", suffix, ".png")), p2, width = 12, height = 7.5, dpi = 200, bg = "white")
+ggsave(file.path(out, "figures", paste0("ms_sim_sqi_curves", suffix, ".png")), p2, width = 12, height = fig_h(3), dpi = 200, bg = "white")
 
 # 3. Mean estimated E[PSQI total | SQI] vs truth
 cwc <- do.call(rbind, lapply(seq_along(res$cw), function(i) do.call(rbind, lapply(methods, function(m)
@@ -141,10 +146,10 @@ p3 <- ggplot(cwa, aes(SQI, psqi)) +
   geom_line(data = cw_truth, linetype = "dashed", colour = "grey15") +
   facet_wrap(~ sc, ncol = 3) +
   scale_colour_manual(values = method_cols, labels = method_lab, breaks = methods, name = NULL) +
-  labs(x = "Actigraphy SQI", y = "E[PSQI global | SQI]",
-       caption = "Solid: mean estimated probabilistic crosswalk; dashed: truth; grey: true SQI density (scaled).") +
+  labs(x = "Y (digital measure)", y = "E[X total | Y]",
+       caption = "Solid: mean estimated probabilistic crosswalk; dashed: truth; grey: true density of Y (scaled).") +
   base_theme
-ggsave(file.path(out, "figures", paste0("ms_sim_crosswalk_curves", suffix, ".png")), p3, width = 12, height = 7.5, dpi = 200, bg = "white")
+ggsave(file.path(out, "figures", paste0("ms_sim_crosswalk_curves", suffix, ".png")), p3, width = 12, height = fig_h(3), dpi = 200, bg = "white")
 
 # 4. Crosswalk error by component
 cwe <- do.call(rbind, lapply(sc_names, function(sc) do.call(rbind, lapply(methods, function(m) {
@@ -156,12 +161,13 @@ cwe$sc <- factor(unname(sc_labels[cwe$scenario]), levels = sc_labels)
 p4 <- ggplot(cwe, aes(component, wrmse, colour = method, shape = method, group = method)) +
   geom_line(linewidth = 0.5, alpha = 0.6) + geom_point(size = 2.4) +
   facet_wrap(~ sc, ncol = 3) +
+  scale_x_discrete(labels = x_items) +
   scale_colour_manual(values = method_cols, labels = method_lab, breaks = methods, name = NULL) +
   scale_shape_manual(values = method_shapes, labels = method_lab, breaks = methods, name = NULL) +
   expand_limits(y = 0) +
-  labs(x = NULL, y = "Weighted RMSE of E[C_j | SQI]",
-       caption = "RMSE over SQI 15 to 95, weighted by the true SQI density; mean over replications.") +
+  labs(x = NULL, y = "Weighted RMSE of E[X_j | Y]",
+       caption = "RMSE over Y = 15 to 95, weighted by the true density of Y; mean over replications.") +
   base_theme
-ggsave(file.path(out, "figures", paste0("ms_sim_crosswalk_error", suffix, ".png")), p4, width = 12, height = 7, dpi = 200, bg = "white")
+ggsave(file.path(out, "figures", paste0("ms_sim_crosswalk_error", suffix, ".png")), p4, width = 12, height = fig_h(2.8), dpi = 200, bg = "white")
 
 cat(sprintf("\nWrote %s/data/ms_sim_*summary%s.csv and %s/figures/ms_sim_*%s.png\n", out, suffix, out, suffix))

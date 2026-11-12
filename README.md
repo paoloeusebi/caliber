@@ -65,7 +65,7 @@ Full analyses (write to `$CALIBER_OUT`, default `output/`):
 | Script | What it does | Environment variables |
 | --- | --- | --- |
 | `sleep_step1.R` | Three approaches on the sleep data, bootstrap | `MS_BOOT` (200), `MS_DRAWS` (2000), `MS_HETERO` (1), `MS_CORES` |
-| `sleep_simulation.R` | 6 scenarios × 200 replications | `MS_REPS`, `MS_DRAWS` (0), `MS_HETERO`, `MS_CORES` |
+| `sleep_simulation.R` | 7 scenarios × 200 replications | `MS_REPS`, `MS_DRAWS` (0), `MS_HETERO`, `MS_CORES` |
 | `sleep_simulation_summary.R` | Tables and figures of the simulation | `MS_HETERO` |
 | `gait_data.R` | Builds the gait analysis file from NHANES XPT files | `NHANES_DIR` |
 | `gait_dimensionality.R` | Dimensionality and local-dependence checks (needs lavaan) | as gait_main |

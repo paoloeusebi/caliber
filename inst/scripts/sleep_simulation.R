@@ -1,13 +1,17 @@
 # =============================================================================
 # sleep_simulation.R  --  Simulation study: the three monotone-spline
 #                         calibration methods (MS-Joint, MS-EAP, MS-Fixed)
-#                         under six data-generating scenarios
+#                         under seven data-generating scenarios
 #
-# Each replication: simulate (n = 1000), fit the PSQI-only GRM once, then the
-# three methods. Targets on the SQI scale:
-#   1. thresholds s_jk = mu(b_jk) against the true m(b_jk)  (bias, RMSE)
-#   2. probabilistic crosswalk E[C_j | SQI = s], s = 15..95 by 0.5, against the
-#      truth; error = RMSE over the grid weighted by the true SQI density
+# Notation: X is the multi-item scale (items X1..X7, stored as C1..C7 in the
+# code) and Y the digital measure (stored as sqi). Scenario 7 ("different
+# concepts") has Y driven by a trait correlated 0.6 with the trait of X.
+#
+# Each replication: simulate (n = 1000), fit the X-only GRM once, then the
+# three methods. Targets on the Y scale:
+#   1. thresholds s_jk = mu(b_jk) against the true E[Y | eta = b_jk]  (bias, RMSE)
+#   2. probabilistic crosswalk E[X_j | Y = s], s = 15..95 by 0.5, against the
+#      truth; error = RMSE over the grid weighted by the true density of Y
 # With MS_DRAWS > 0, also 95% normal-approximation intervals for the
 # thresholds, mu(eta) and the crosswalk, and their coverage (this coverage
 # study was started on 2026-10-11 and stopped after 49 of 1200 replications;
@@ -20,7 +24,10 @@
 # end in _constsd), MS_DRAWS (default 0), CALIBER_OUT (default "output"),
 # MS_CACHE (cache folder, one .rds per scenario x replication, so an
 # interrupted run resumes; delete it after any change to the code).
-# Run time: about 3 hours on 4 cores for 1200 replications without intervals.
+# Run time: about 3 hours on 4 cores for the 1200 replications of scenarios 1-6
+# without intervals, plus about 30 minutes for scenario 7. Scenarios 1-6 give
+# the same results as the 8 October run (same seeds, deterministic fits), so a
+# kept cache only needs scenario 7 to be added.
 # Then run sleep_simulation_summary.R.
 # =============================================================================
 
