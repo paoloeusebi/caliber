@@ -1,11 +1,12 @@
 # =============================================================================
 # sleep_simulation.R  --  Simulation study: the three monotone-spline
 #                         calibration methods (MS-Joint, MS-EAP, MS-Fixed)
-#                         under seven data-generating scenarios
+#                         under ten data-generating scenarios
 #
 # Notation: X is the multi-item scale (items X1..X7, stored as C1..C7 in the
-# code) and Y the digital measure (stored as sqi). Scenario 7 ("different
-# concepts") has Y driven by a trait correlated 0.6 with the trait of X.
+# code) and Y the digital measure (stored as sqi). Scenarios 7 to 10
+# ("different concepts") have Y driven by a trait correlated 0.9, 0.7, 0.5 or
+# 0.3 with the trait of X.
 #
 # Each replication: simulate (n = 1000), fit the X-only GRM once, then the
 # three methods. Targets on the Y scale:
@@ -25,9 +26,9 @@
 # MS_CACHE (cache folder, one .rds per scenario x replication, so an
 # interrupted run resumes; delete it after any change to the code).
 # Run time: about 3 hours on 4 cores for the 1200 replications of scenarios 1-6
-# without intervals, plus about 30 minutes for scenario 7. Scenarios 1-6 give
-# the same results as the 8 October run (same seeds, deterministic fits), so a
-# kept cache only needs scenario 7 to be added.
+# without intervals, plus about 30 minutes for each of scenarios 7 to 10.
+# Scenarios 1-6 give the same results as the 8 October run (same seeds,
+# deterministic fits), so a kept cache only needs scenarios 7 to 10 added.
 # Then run sleep_simulation_summary.R.
 # =============================================================================
 
