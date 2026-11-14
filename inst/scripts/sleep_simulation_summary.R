@@ -13,6 +13,9 @@
 # =============================================================================
 
 suppressPackageStartupMessages({ library(caliber); library(ggplot2); library(patchwork) })
+if (utils::packageVersion("caliber") < "0.2.0" || length(scenarios) != 10)
+  stop("caliber is out of date (", utils::packageVersion("caliber"), ", ", length(scenarios),
+       " scenarios); reinstall it: remotes::install_github(\"paoloeusebi/caliber\")")
 items <- paste0("C", 1:7); n_items <- 7; thr_names <- threshold_names(items)
 methods <- ms_methods; method_long <- ms_method_labels; method_cols <- ms_method_colours
 out <- Sys.getenv("CALIBER_OUT", "output")

@@ -1,7 +1,7 @@
 Package: caliber
 Type: Package
 Title: Monotone Calibration of a Digital Measure to a Multi-Item PRO
-Version: 0.1.0
+Version: 0.2.0
 Date: 2026-10-14
 Authors@R: person("Paolo", "Eusebi", email = "paoloeusebi@gmail.com",
                   role = c("aut", "cre"))
