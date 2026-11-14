@@ -6,6 +6,8 @@
 # stored as C1..C7; X total = their sum, stored as PSQI) and Y the digital
 # measure (stored as sqi).
 # Outputs: data/ms_sim_summary*.csv, data/ms_sim_threshold_summary*.csv,
+#          data/ms_sim_crosswalk_comparison*.csv (with equipercentile linking, if
+#          sleep_simulation_equipercentile.R has been run),
 #          figures/ms_sim_thresholds*.png, ms_sim_sqi_curves*.png,
 #          ms_sim_crosswalk_curves*.png, ms_sim_crosswalk_error*.png
 # =============================================================================
@@ -83,6 +85,24 @@ for (sc in sc_names) {
   cat(sprintf("%-16s %s | half gap %.2f\n", sc, paste(sprintf("%s %.2f (%.2f) k3 %.2f | cw %.3f (%.3f)%s",
       s$method, s$thr_rmse, s$thr_rmse_mcse, s$thr_rmse_k3, s$cw_items, s$cw_psqi,
       ifelse(s$meaningful, "", " [not meaningful]")), collapse = " || "), half_gap[[sc]]))
+}
+
+# Equipercentile linking (sleep_simulation_equipercentile.R), when its summary
+# exists: crosswalk error of the same data sets against the same truth.
+eq_file <- file.path(out, "data", "ms_sim_equipercentile_summary.csv")
+if (file.exists(eq_file)) {
+  eq <- read.csv(eq_file)
+  cw_tab <- rbind(summary_tab[, c("scenario", "method", "cw_items", "cw_psqi")],
+                  eq[, c("scenario", "method", "cw_items", "cw_psqi")])
+  cw_tab <- cw_tab[order(match(cw_tab$scenario, sc_names)), ]
+  write.csv(cw_tab, file.path(out, "data", paste0("ms_sim_crosswalk_comparison", suffix, ".csv")),
+            row.names = FALSE)
+  cat("\nCrosswalk wRMSE, mean over X1..X7 (X total), including equipercentile linking\n")
+  for (sc in sc_names) {
+    s <- cw_tab[cw_tab$scenario == sc, ]
+    cat(sprintf("%-16s %s\n", sc, paste(sprintf("%s %.3f (%.3f)", s$method, s$cw_items, s$cw_psqi),
+                                       collapse = " | ")))
+  }
 }
 
 base_theme <- theme_minimal(base_size = 12) +
