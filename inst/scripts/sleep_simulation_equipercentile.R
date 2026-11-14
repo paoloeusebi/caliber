@@ -21,6 +21,9 @@
 # =============================================================================
 
 suppressPackageStartupMessages(library(caliber))
+if (utils::packageVersion("caliber") < "0.2.0" || length(scenarios) != 10)
+  stop("caliber is out of date (", utils::packageVersion("caliber"), ", ", length(scenarios),
+       " scenarios); reinstall it: remotes::install_github(\"paoloeusebi/caliber\")")
 items <- paste0("C", 1:7)
 out <- Sys.getenv("CALIBER_OUT", "output")
 dir.create(file.path(out, "data"), recursive = TRUE, showWarnings = FALSE)

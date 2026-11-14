@@ -24,7 +24,8 @@
 # MS_HETERO (1 = log-linear residual SD, default; 0 = constant SD, outputs
 # end in _constsd), MS_DRAWS (default 0), CALIBER_OUT (default "output"),
 # MS_CACHE (cache folder, one .rds per scenario x replication, so an
-# interrupted run resumes; delete it after any change to the code).
+# interrupted run resumes; a cached file is reused only if it was made for the
+# same scenario name; delete the folder after any change to the fitting code).
 # Run time: about 3 hours on 4 cores for the 1200 replications of scenarios 1-6
 # without intervals, plus about 30 minutes for each of scenarios 7 to 10.
 # Scenarios 1-6 give the same results as the 8 October run (same seeds,
@@ -33,6 +34,9 @@
 # =============================================================================
 
 suppressPackageStartupMessages(library(caliber))
+if (utils::packageVersion("caliber") < "0.2.0" || length(scenarios) != 10)
+  stop("caliber is out of date (", utils::packageVersion("caliber"), ", ", length(scenarios),
+       " scenarios); reinstall it: remotes::install_github(\"paoloeusebi/caliber\")")
 items <- paste0("C", 1:7); thr_names <- threshold_names(items); methods <- ms_methods
 out <- Sys.getenv("CALIBER_OUT", "output")
 
@@ -49,7 +53,10 @@ truths   <- lapply(seq_along(scenarios), scenario_truth, grid = cw_grid)
 
 run_rep <- function(s, r) {
   file <- file.path(cache, sprintf("s%d_r%03d.rds", s, r))
-  if (file.exists(file)) return(readRDS(file))
+  if (file.exists(file)) {                     # reuse only if made for this scenario
+    old <- readRDS(file)
+    if (identical(old$rows$scenario[1], names(scenarios)[s])) return(old)
+  }
   t0  <- Sys.time()
   dat <- simulate_scenario(s, r)
   grm <- fit_grm(dat$Y)
