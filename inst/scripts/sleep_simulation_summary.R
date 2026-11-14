@@ -32,6 +32,15 @@ k_of      <- rep(1:3, each = n_items)
 err <- t(sapply(seq_len(nrow(rows)), function(i)
   unlist(rows[i, s_cols]) - true_thr[[match(rows$scenario[i], sc_names)]]))
 
+# Divergence criterion (fixed before scenarios 7-10 were run): calibration is
+# taken to be meaningful while the pooled threshold RMSE is below half the
+# median distance between adjacent true thresholds of the same item, so that
+# neighbouring categories can still be told apart on the scale of Y.
+half_gap <- setNames(lapply(res$truths, function(t) {
+  thr <- matrix(t$thr, nrow = n_items)
+  median(abs(c(thr[, 1] - thr[, 2], thr[, 2] - thr[, 3]))) / 2
+}), sc_names[seq_along(res$truths)])
+
 rmse_mc <- function(mse) {            # pooled RMSE and its Monte Carlo SE (delta method)
   r <- sqrt(mean(mse)); c(r, sd(mse) / (2 * r * sqrt(length(mse))))
 }
@@ -55,7 +64,8 @@ summary_tab <- do.call(rbind, lapply(sc_names, function(sc) do.call(rbind, lappl
              g1_p025 = unname(quantile(rows$g1[i], .025)), g1_p975 = unname(quantile(rows$g1[i], .975)),
              a_C4 = mean(rows$a_C4[i]),
              iter_median = median(rows$iter[i]), df_mean = mean(rows$df[i]),
-             secs_mean = mean(rows$secs[i]))
+             secs_mean = mean(rows$secs[i]),
+             half_gap = half_gap[[sc]], meaningful = all[1] < half_gap[[sc]])
 }))))
 write.csv(summary_tab, file.path(out, "data", paste0("ms_sim_summary", suffix, ".csv")), row.names = FALSE)
 
@@ -70,8 +80,9 @@ write.csv(thr_tab, file.path(out, "data", paste0("ms_sim_threshold_summary", suf
 cat("Pooled threshold RMSE (MC SE) / crosswalk wRMSE mean over X1..X7 (X total)\n")
 for (sc in sc_names) {
   s <- summary_tab[summary_tab$scenario == sc, ]
-  cat(sprintf("%-16s %s\n", sc, paste(sprintf("%s %.2f (%.2f) k3 %.2f | cw %.3f (%.3f)",
-      s$method, s$thr_rmse, s$thr_rmse_mcse, s$thr_rmse_k3, s$cw_items, s$cw_psqi), collapse = " || ")))
+  cat(sprintf("%-16s %s | half gap %.2f\n", sc, paste(sprintf("%s %.2f (%.2f) k3 %.2f | cw %.3f (%.3f)%s",
+      s$method, s$thr_rmse, s$thr_rmse_mcse, s$thr_rmse_k3, s$cw_items, s$cw_psqi,
+      ifelse(s$meaningful, "", " [not meaningful]")), collapse = " || "), half_gap[[sc]]))
 }
 
 base_theme <- theme_minimal(base_size = 12) +

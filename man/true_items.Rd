@@ -15,12 +15,13 @@ scenarios
 \description{
 `true_items`: the seven PSQI-component GRM items of the simulated sleep
 example (slopes a, thresholds b, intercepts d = -a b). `scenarios`: the
-seven data-generating models of the simulation study, each a list(label,
+ten data-generating models of the simulation study, each a list(label,
 m = true mean curve E[Y | eta], sd = true residual SD function, ld = local
 dependence, and optionally m_y and rho). In the simulation X is the
 multi-item scale (items X1..X7, stored as C1..C7) and Y the digital measure.
-Scenario 7 ("different concepts") has Y driven by its own trait
-xi = rho eta + sqrt(1 - rho^2) u, correlated rho with the trait eta of X:
+Scenarios 7 to 10 ("different concepts", rho = 0.9, 0.7, 0.5, 0.3) have Y
+driven by its own trait xi = rho eta + sqrt(1 - rho^2) u, correlated rho with
+the trait eta of X:
 Y = m_y(xi) + N(0, sd^2), and m is then E[Y | eta], the curve the methods
 estimate. They are truths only; no analysis model assumes their shape.
 }

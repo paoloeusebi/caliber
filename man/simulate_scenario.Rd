@@ -7,7 +7,7 @@
 simulate_scenario(s, r, n = 1000)
 }
 \arguments{
-\item{s}{scenario index (1..7, order of [scenarios])}
+\item{s}{scenario index (1..10, order of [scenarios])}
 
 \item{r}{replication number}
 

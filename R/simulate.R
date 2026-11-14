@@ -1,18 +1,19 @@
 # ---- Data-generating scenarios (misspecification study) -------------------------
-# The six scenarios of the earlier study, unchanged, and a seventh in which X
-# and Y measure correlated but different traits. They are truths only; no
+# The six scenarios of the earlier study, unchanged, and four (7 to 10) in which
+# X and Y measure correlated but different traits. They are truths only; no
 # analysis model below assumes their shape.
 
 #' True item parameters and simulation scenarios of the sleep example
 #'
 #' `true_items`: the seven PSQI-component GRM items of the simulated sleep
 #' example (slopes a, thresholds b, intercepts d = -a b). `scenarios`: the
-#' seven data-generating models of the simulation study, each a list(label,
+#' ten data-generating models of the simulation study, each a list(label,
 #' m = true mean curve E[Y | eta], sd = true residual SD function, ld = local
 #' dependence, and optionally m_y and rho). In the simulation X is the
 #' multi-item scale (items X1..X7, stored as C1..C7) and Y the digital measure.
-#' Scenario 7 ("different concepts") has Y driven by its own trait
-#' xi = rho eta + sqrt(1 - rho^2) u, correlated rho with the trait eta of X:
+#' Scenarios 7 to 10 ("different concepts", rho = 0.9, 0.7, 0.5, 0.3) have Y
+#' driven by its own trait xi = rho eta + sqrt(1 - rho^2) u, correlated rho with
+#' the trait eta of X:
 #' Y = m_y(xi) + N(0, sd^2), and m is then E[Y | eta], the curve the methods
 #' estimate. They are truths only; no analysis model assumes their shape.
 #' @format lists
@@ -24,19 +25,25 @@ true_items <- list(
             c( 2.2,  1.6, 1.9, 1.8,  3.0, 2.8,  2.5)))
 true_items$d <- -true_items$a * true_items$b
 
-# Scenario 7 (different concepts): Y measures a related but different trait,
-# xi = rho eta + sqrt(1 - rho^2) u, where the nuisance factor u (drawn in every
-# scenario) is Y's own part. The true curve of Y on the trait of X is then the
-# average of m_y over xi given eta, computed by mean_given_eta() with
-# Gauss-Hermite quadrature over u (exact for a quadratic m_y). With rho = 0.6 it
-# is 71.04 - 4.8 eta - 0.54 eta^2, monotone for eta > -4.4, and cor(X total, Y)
-# is about -0.42, against -0.71 in the baseline.
+# Scenarios 7 to 10 (different concepts): Y measures a related but different
+# trait, xi = rho eta + sqrt(1 - rho^2) u, with rho = 0.9, 0.7, 0.5 and 0.3; the
+# nuisance factor u (drawn in every scenario) is Y's own part. The true curve of
+# Y on the trait of X is then the average of m_y over xi given eta, computed by
+# mean_given_eta() with Gauss-Hermite quadrature over u (exact for a quadratic
+# m_y): 72 - 8 rho eta - 1.5 (rho^2 eta^2 + 1 - rho^2). cor(X total, Y) is about
+# -0.64, -0.49, -0.35 and -0.21, against -0.71 in the baseline (rho = 1).
+# Note: the seed of scenario 10, 20261003 + 100000 + r, equals the bootstrap
+# seed of the main sleep analysis; the two streams are used for unrelated data.
 y_trait <- function(sc, eta, u)
   if (is.null(sc$rho)) eta else sc$rho * eta + sqrt(1 - sc$rho^2) * u
 mean_given_eta <- function(m_y, rho) {
   uq <- statmod::gauss.quad.prob(41, dist = "normal")
   function(e) vapply(e, function(x) sum(uq$weights * m_y(rho * x + sqrt(1 - rho^2) * uq$nodes)), 0)
 }
+diff_concept <- function(rho, m_y = function(x) 72 - 8 * x - 1.5 * x^2)
+  list(label = sprintf("Different concepts, rho = %.1f", rho),
+       m = mean_given_eta(m_y, rho), m_y = m_y, rho = rho,
+       sd = function(e) 6 + 0 * e, ld = FALSE)
 
 #' @rdname true_items
 #' @export
@@ -53,17 +60,17 @@ scenarios <- list(
                   m = function(e) 35 + 50 / (1 + exp(3 * (e - 0.8))), sd = function(e) 6 + 0 * e, ld = FALSE),
   plateau = list(label = "Plateau, then decline",
                   m = function(e) 80 - 6 * log(1 + exp(2 * e)), sd = function(e) 6 + 0 * e, ld = FALSE),
-  diff_concept = list(label = "Different concepts (trait correlation 0.6)",
-                  m = mean_given_eta(function(x) 72 - 8 * x - 1.5 * x^2, 0.6),
-                  m_y = function(x) 72 - 8 * x - 1.5 * x^2, rho = 0.6,
-                  sd = function(e) 6 + 0 * e, ld = FALSE))
+  diff_concept_09 = diff_concept(0.9),
+  diff_concept_07 = diff_concept(0.7),
+  diff_concept_05 = diff_concept(0.5),
+  diff_concept_03 = diff_concept(0.3))
 ld_item <- 4; ld_item_load <- 1.2; ld_sqi_load <- -3.6
 
 #' Simulate one replication of a scenario
 #'
 #' RNG order: eta, nuisance factor u, items C1..C7, SQI residuals; seed
 #' 20261003 + 10000 s + r. SQI is rounded to one decimal.
-#' @param s scenario index (1..7, order of [scenarios])
+#' @param s scenario index (1..10, order of [scenarios])
 #' @param r replication number
 #' @param n sample size
 #' @return list(Y, sqi, eta)
